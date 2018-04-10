@@ -22,6 +22,7 @@
 #include <string>
 #include <stdio.h>
 #include <math.h>
+#include <iostream>
 
 const int N = (1024*1024);
 const int FULL_DATA_SIZE  = N * 20;
@@ -39,7 +40,7 @@ __global__ void testKernel(int *c, const int *a, const int *b)
 }
 
 //unuse stream(default)
-void UnUsedStreams()
+int UnUsedStreams()
 {
 	//start event clock
 	cudaEvent_t start, stop;
@@ -48,13 +49,13 @@ void UnUsedStreams()
 	checkCudaErrors(cudaEventCreate(&stop));
 	checkCudaErrors(cudaEventRecord(start, 0));
 
-	int *host_a, *host_b, *host_c;
-	int *dev_a, *dev_b, *dev_c;
+	int *host_a = 0, *host_b = 0, *host_c = 0;
+	int *dev_a = 0, *dev_b = 0, *dev_c = 0;
 
 	//alloc memory in GPU
-	checkCudaErrors(cudaMalloc((void **)dev_a, FULL_DATA_SIZE * sizeof(int)));
-	checkCudaErrors(cudaMalloc((void **)dev_b, FULL_DATA_SIZE * sizeof(int)));
-    checkCudaErrors(cudaMalloc((void **)dev_c, FULL_DATA_SIZE * sizeof(int)));
+	checkCudaErrors(cudaMalloc((void **)&dev_a, FULL_DATA_SIZE * sizeof(int)));  //remember dev_a need &
+	checkCudaErrors(cudaMalloc((void **)&dev_b, FULL_DATA_SIZE * sizeof(int)));
+    checkCudaErrors(cudaMalloc((void **)&dev_c, FULL_DATA_SIZE * sizeof(int)));
 
 	//alloc memory in CPU
 	host_a = (int *)malloc(FULL_DATA_SIZE * sizeof(int));
@@ -92,7 +93,7 @@ void UnUsedStreams()
 		std::cout << host_c[i] << std::endl;
 	}
 
-	getchar();
+	//getchar();
 
 
 	cudaFreeHost(host_a);
@@ -105,6 +106,8 @@ void UnUsedStreams()
 
 	checkCudaErrors(cudaEventDestroy(start));
 	checkCudaErrors(cudaEventDestroy(stop));
+
+	return 0;
 }
 
 int UsedStreams()
@@ -118,7 +121,8 @@ int UsedStreams()
 	//test if have overlap
 	if(!prop.deviceOverlap)
 	{
-		std::cout << "No device will handle overlaps." << endl;
+		//just write like endl, get error MSB3721: The command ""C:\Program Files\NVIDIA GPU Computing
+		std::cout << "No device will handle overlaps." << std::endl; 
 		return 0;
 	}
 
@@ -133,13 +137,13 @@ int UsedStreams()
 	cudaStream_t stream;
 	cudaStreamCreate(&stream);
 
-	int *host_a, *host_b, *host_c;
-	int *dev_a, *dev_b, *dev_c;
+	int *host_a = 0, *host_b = 0, *host_c = 0;
+	int *dev_a = 0, *dev_b = 0, *dev_c = 0;
 
 	//alloc memory in GPU
-	checkCudaErrors(cudaMalloc((void **)dev_a, N * sizeof(int)));
-	checkCudaErrors(cudaMalloc((void **)dev_b, N * sizeof(int)));
-    checkCudaErrors(cudaMalloc((void **)dev_c, N * sizeof(int)));
+	checkCudaErrors(cudaMalloc((void **)&dev_a, N * sizeof(int))); //remember dev_a need &
+	checkCudaErrors(cudaMalloc((void **)&dev_b, N * sizeof(int)));
+    checkCudaErrors(cudaMalloc((void **)&dev_c, N * sizeof(int)));
 
 	//alloc memory in CPU, must pined memory
 	checkCudaErrors(cudaHostAlloc((void **)&host_a, FULL_DATA_SIZE * sizeof(int),
@@ -153,21 +157,25 @@ int UsedStreams()
 	for(int i = 0; i < FULL_DATA_SIZE; ++i)
 	{
 		host_a[i] = i;
-		host_b[i] = FULL_DATA_SIZE -i;
+		host_b[i] = FULL_DATA_SIZE - i;
 	}
 
-	for(int i= 0; i < FULL_DATA_SIZE; i +=N)
+	for(int i= 0; i < FULL_DATA_SIZE; i += N)
 	{
 		checkCudaErrors(cudaMemcpyAsync(dev_a, host_a + i, N * sizeof(int),
 			cudaMemcpyHostToDevice, stream));
 		checkCudaErrors(cudaMemcpyAsync(dev_b, host_b + i, N * sizeof(int),
 			cudaMemcpyHostToDevice, stream));
 
-		testKernel<<<N /1024, 1024, 0, stream>>>(dev_c, dev_a, dev_b);
+		testKernel<<<N / 1024, 1024, 0, stream>>>(dev_c, dev_a, dev_b);
 
 		checkCudaErrors(cudaMemcpyAsync(host_c + i, dev_c, N * sizeof(int),
 			cudaMemcpyDeviceToHost, stream));
 	}
+
+	//wait until gpu execution finish
+	checkCudaErrors(cudaStreamSynchronize(stream));  //later add 
+
 
 	//end of clock
 	checkCudaErrors(cudaEventRecord(stop, 0));
@@ -182,7 +190,7 @@ int UsedStreams()
 		std::cout << host_c[i] << std::endl;
 	}
 
-	getchar();
+	//getchar();
 
 	checkCudaErrors(cudaFreeHost(host_a));
 	checkCudaErrors(cudaFreeHost(host_b));
@@ -201,7 +209,7 @@ int UsedStreams()
 
 int main(int argc, char *argv[])
 {
-    UnUsedStreams();
-	UsedStreams();
+    UnUsedStreams(); 
+	UsedStreams();//why cann't runs, because of the getchar() function
     return 0;
 }
