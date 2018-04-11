@@ -85,7 +85,7 @@ int UnUsedStreams()
 	checkCudaErrors(cudaEventSynchronize(stop));
 	checkCudaErrors(cudaEventElapsedTime(&elapsedTime, start, stop));
 
-	std::cout << "Time consume: " << elapsedTime << std::endl;
+	std::cout << "UnUsedStreams Time consume: " << elapsedTime << std::endl;
 
 	//show output
 	for(int i = 0; i < 10; ++i)
@@ -182,7 +182,7 @@ int UsedStreams()
 	checkCudaErrors(cudaEventSynchronize(stop));
 	checkCudaErrors(cudaEventElapsedTime(&elapsedTime, start, stop));
 
-	std::cout << "Time consume: " << elapsedTime << std::endl;
+	std::cout << "UsedStreams Time consume: " << elapsedTime << std::endl;
 
 	//show output
 	for(int i = 0; i < 10; ++i)
@@ -206,10 +206,131 @@ int UsedStreams()
 	return 0;
 }
 
+//staged concurrent copy and execute
+int UsedStagedStreams() //something wrong, why faster than UsedStreams
+{
+	//attain device properties
+	const int nStreams = 8; //number of used non-null stream
+	cudaDeviceProp prop;
+	int deviceID;
+	checkCudaErrors(cudaGetDevice(&deviceID));
+	checkCudaErrors(cudaGetDeviceProperties(&prop, deviceID));
+
+	//test if have overlap
+	if(!prop.deviceOverlap)
+	{
+		//just write like endl, get error MSB3721: The command ""C:\Program Files\NVIDIA GPU Computing
+		std::cout << "No device will handle overlaps." << std::endl; 
+		return 0;
+	}
+
+	//start event clock
+	cudaEvent_t start, stop;
+	float elapsedTime;
+	checkCudaErrors(cudaEventCreate(&start));
+	checkCudaErrors(cudaEventCreate(&stop));
+	checkCudaErrors(cudaEventRecord(start, 0));
+
+	//create streams
+	//cudaStream_t stream;  //error arise--repetition next
+	//cudaStreamCreate(&stream);
+
+	int *host_a = 0, *host_b = 0, *host_c = 0;
+	int *dev_a = 0, *dev_b = 0, *dev_c = 0;
+
+
+	//alloc memory in GPU
+	checkCudaErrors(cudaMalloc((void **)&dev_a, FULL_DATA_SIZE * sizeof(int))); //remember dev_a need &
+	checkCudaErrors(cudaMalloc((void **)&dev_b, FULL_DATA_SIZE * sizeof(int)));
+    checkCudaErrors(cudaMalloc((void **)&dev_c, FULL_DATA_SIZE * sizeof(int)));
+
+	//alloc memory in CPU, must pined memory
+	checkCudaErrors(cudaHostAlloc((void **)&host_a, FULL_DATA_SIZE * sizeof(int),
+		cudaHostAllocDefault));
+	checkCudaErrors(cudaHostAlloc((void **)&host_b, FULL_DATA_SIZE * sizeof(int),
+		cudaHostAllocDefault));
+	checkCudaErrors(cudaHostAlloc((void **)&host_c, FULL_DATA_SIZE * sizeof(int),
+		cudaHostAllocDefault));
+
+	//assign vlaues in cpu
+	for(int i = 0; i < FULL_DATA_SIZE; ++i)
+	{
+		host_a[i] = i;
+		host_b[i] = FULL_DATA_SIZE - i;
+	}
+
+
+	int sizeOfStream = FULL_DATA_SIZE * sizeof(int) / nStreams;
+	cudaStream_t stream[nStreams];
+	for(int i = 0; i < nStreams; i++)
+	{
+		checkCudaErrors(cudaStreamCreate(&stream[i]));
+	}
+
+	for(int i= 0; i < nStreams; i++)
+	{
+		int offset = i * FULL_DATA_SIZE / nStreams; //it is different from sizeOfStream
+		checkCudaErrors(cudaMemcpyAsync(dev_a + offset, host_a + offset, sizeOfStream,
+			cudaMemcpyHostToDevice, stream[i]));
+		checkCudaErrors(cudaMemcpyAsync(dev_b + offset, host_b + offset, sizeOfStream,
+			cudaMemcpyHostToDevice, stream[i]));
+
+		testKernel<<<FULL_DATA_SIZE / (nStreams * 1024) , 1024, 0, stream[i]>>>(dev_c + offset, dev_a + offset, dev_b + offset);
+
+		checkCudaErrors(cudaMemcpyAsync(host_c + offset, dev_c + offset, sizeOfStream,
+			cudaMemcpyDeviceToHost, stream[i]));
+	}
+
+	for(int i = 0; i < nStreams; ++i)
+	{
+				//wait until gpu execution finish
+		checkCudaErrors(cudaStreamSynchronize(stream[i]));  //later add 
+	}
+
+   
+	//end of clock
+	checkCudaErrors(cudaEventRecord(stop, 0));
+	checkCudaErrors(cudaEventSynchronize(stop));
+	checkCudaErrors(cudaEventElapsedTime(&elapsedTime, start, stop));
+
+	std::cout << "UsedStagedStreams Time consume: " << elapsedTime << std::endl;
+
+	//show output
+	for(int i = 0; i < 10; ++i)
+	{
+		std::cout << host_c[i] << std::endl;
+	}
+
+	//getchar();
+
+	//for(int i = 0; i < nStreams; ++i)
+	//{
+	//	//wait until gpu execution finish
+	//	checkCudaErrors(cudaStreamDestroy(stream[i]));  //later add 
+	//}
+
+	//free all memory 
+	checkCudaErrors(cudaFreeHost(host_a));
+	checkCudaErrors(cudaFreeHost(host_b));
+	checkCudaErrors(cudaFreeHost(host_c));
+
+	checkCudaErrors(cudaFree(dev_a));
+	checkCudaErrors(cudaFree(dev_b));
+	checkCudaErrors(cudaFree(dev_c));
+
+	checkCudaErrors(cudaEventDestroy(start));
+	checkCudaErrors(cudaEventDestroy(stop));
+
+	return 0;
+}
+
+
 
 int main(int argc, char *argv[])
 {
-    UnUsedStreams(); 
-	UsedStreams();//why cann't runs, because of the getchar() function
+    UnUsedStreams(); // nonStreams
+	UsedStreams();//20 streams
+	UsedStagedStreams();//4 Streams
+	//why cann't runs, because of the getchar() function
     return 0;
 }
