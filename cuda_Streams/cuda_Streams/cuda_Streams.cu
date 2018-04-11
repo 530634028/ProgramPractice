@@ -303,11 +303,11 @@ int UsedStagedStreams() //something wrong, why faster than UsedStreams
 
 	//getchar();
 
-	//for(int i = 0; i < nStreams; ++i)
-	//{
-	//	//wait until gpu execution finish
-	//	checkCudaErrors(cudaStreamDestroy(stream[i]));  //later add 
-	//}
+	for(int i = 0; i < nStreams; ++i)
+	{
+		//wait until gpu execution finish
+		checkCudaErrors(cudaStreamDestroy(stream[i]));  //later add 
+	}
 
 	//free all memory 
 	checkCudaErrors(cudaFreeHost(host_a));
