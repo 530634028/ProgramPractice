@@ -24,7 +24,7 @@ typedef struct {
 	int width;
 	int height;
 	int stride;
-	float * elements;
+	float *elements;
 } Matrix;
 
 //Thread block size
@@ -121,7 +121,7 @@ __device__ Matrix GetSubMatrix(Matrix A, int row, int col)
 }
 
 // Matrix multiplication kernel called by MatMulWithSharedMem
-__global__ void MatMulSharedMem(Matrix A, Matrix B, Matrix C)
+__global__ void MatMulSharedMemKernel(Matrix A, Matrix B, Matrix C)
 {
 	//Block row and column
 	int blockRow = blockIdx.y;  //wrong here, data is opsite to block zhonghy
@@ -155,7 +155,7 @@ __global__ void MatMulSharedMem(Matrix A, Matrix B, Matrix C)
 		__shared__ float Bs[BLOCK_SIZE][BLOCK_SIZE];
 
 		//Load Asub and Bsub from device memory to shared memory
-		//Each thread loads one element of each sub-matrix
+		//Each thread loads one element of each sub-matrix(important)
 		As[row][col] = GetElement(Asub, row, col);
 		Bs[row][col] = GetElement(Bsub, row, col);
 
@@ -206,8 +206,8 @@ void MatMulWithSharedMem(const Matrix A, const Matrix B, Matrix C)
 
 	//invoke kernel
 	dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
-	dim3 dimGrid(B.width / BLOCK_SIZE, A.height / BLOCK_SIZE);
-	MatMulSharedMem<<<dimGrid, dimBlock>>>(d_A, d_B, d_C);
+	dim3 dimGrid(B.width / BLOCK_SIZE, A.height / BLOCK_SIZE); //number of blocks
+	MatMulSharedMemKernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_C);
 
 	//Read C from device memory
 	checkCudaErrors(cudaMemcpy(C.elements, d_C.elements, size, cudaMemcpyDeviceToHost));

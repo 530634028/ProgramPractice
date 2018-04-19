@@ -261,25 +261,56 @@ int UsedStagedStreams() //something wrong, why faster than UsedStreams
 
 
 	int sizeOfStream = FULL_DATA_SIZE * sizeof(int) / nStreams;
+
 	cudaStream_t stream[nStreams];
 	for(int i = 0; i < nStreams; i++)
 	{
 		checkCudaErrors(cudaStreamCreate(&stream[i]));
 	}
 
+	//for(int i= 0; i < nStreams; i++)
+	//{
+	//	int offset = i * FULL_DATA_SIZE / nStreams; //it is different from sizeOfStream
+	//	checkCudaErrors(cudaMemcpyAsync(dev_a + offset, host_a + offset, sizeOfStream,
+	//		cudaMemcpyHostToDevice, stream[i]));
+	//	checkCudaErrors(cudaMemcpyAsync(dev_b + offset, host_b + offset, sizeOfStream,
+	//		cudaMemcpyHostToDevice, stream[i]));
+
+	//	testKernel<<<FULL_DATA_SIZE / (nStreams * 1024) , 1024, 0, stream[i]>>>(dev_c + offset, dev_a + offset, dev_b + offset);
+
+	//	checkCudaErrors(cudaMemcpyAsync(host_c + offset, dev_c + offset, sizeOfStream,
+	//		cudaMemcpyDeviceToHost, stream[i]));
+	//}
+
+	//another way to run zhonghy-2018-4-19 added, in 3.2.5.5 of guide
 	for(int i= 0; i < nStreams; i++)
 	{
 		int offset = i * FULL_DATA_SIZE / nStreams; //it is different from sizeOfStream
 		checkCudaErrors(cudaMemcpyAsync(dev_a + offset, host_a + offset, sizeOfStream,
 			cudaMemcpyHostToDevice, stream[i]));
+	}
+
+	for(int i= 0; i < nStreams; i++)
+	{
+		int offset = i * FULL_DATA_SIZE / nStreams; //it is different from sizeOfStream
 		checkCudaErrors(cudaMemcpyAsync(dev_b + offset, host_b + offset, sizeOfStream,
 			cudaMemcpyHostToDevice, stream[i]));
+	}
 
+	for(int i= 0; i < nStreams; i++)
+	{
+		int offset = i * FULL_DATA_SIZE / nStreams; //it is different from sizeOfStream
 		testKernel<<<FULL_DATA_SIZE / (nStreams * 1024) , 1024, 0, stream[i]>>>(dev_c + offset, dev_a + offset, dev_b + offset);
+	}
 
+	for(int i= 0; i < nStreams; i++)
+	{
+		int offset = i * FULL_DATA_SIZE / nStreams; //it is different from sizeOfStream
 		checkCudaErrors(cudaMemcpyAsync(host_c + offset, dev_c + offset, sizeOfStream,
 			cudaMemcpyDeviceToHost, stream[i]));
 	}
+	
+
 
 	for(int i = 0; i < nStreams; ++i)
 	{
