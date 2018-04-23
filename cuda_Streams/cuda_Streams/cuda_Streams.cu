@@ -39,6 +39,13 @@ __global__ void testKernel(int *c, const int *a, const int *b)
 	}
 }
 
+
+//add callback functions 2018-4-23 zhong
+void CUDART_CB MyCallback(cudaStream_t stream, cudaError_t status, void *data)
+{
+	std::cout << "Inside callback " << (size_t)data << std::endl;
+}
+
 //unuse stream(default)
 int UnUsedStreams()
 {
@@ -206,9 +213,12 @@ int UsedStreams()
 	return 0;
 }
 
+
+
 //staged concurrent copy and execute
 int UsedStagedStreams() //something wrong, why faster than UsedStreams
 {
+	//std::cout << "Used Staged Strems: " << std::endl; 
 	//attain device properties
 	const int nStreams = 8; //number of used non-null stream
 	cudaDeviceProp prop;
@@ -268,6 +278,8 @@ int UsedStagedStreams() //something wrong, why faster than UsedStreams
 		checkCudaErrors(cudaStreamCreate(&stream[i]));
 	}
 
+
+	////add callback functions 
 	//for(int i= 0; i < nStreams; i++)
 	//{
 	//	int offset = i * FULL_DATA_SIZE / nStreams; //it is different from sizeOfStream
@@ -280,6 +292,9 @@ int UsedStagedStreams() //something wrong, why faster than UsedStreams
 
 	//	checkCudaErrors(cudaMemcpyAsync(host_c + offset, dev_c + offset, sizeOfStream,
 	//		cudaMemcpyDeviceToHost, stream[i]));
+
+	//	//add callback functions
+	//	checkCudaErrors(cudaStreamAddCallback(stream[i], MyCallback, (void*)i, 0));
 	//}
 
 	//another way to run zhonghy-2018-4-19 added, in 3.2.5.5 of guide
