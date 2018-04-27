@@ -183,14 +183,14 @@ int main(int argc, char *argv[])
 	}
 	print(h_data, 5 ,5);
 
-	cudaChannelFormatDesc channelDesc = 
+	cudaChannelFormatDesc channelDesc =    //define texel type
 		cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
 	cudaArray *cuArray;
 	checkCudaErrors(cudaMallocArray(&cuArray, &channelDesc, width, height));
 
 	//Copy to device memory some data located at address h_data
 	//in host memory
-	checkCudaErrors(cudaMemcpyToArray(cuArray, 0, 0, h_data,
+	checkCudaErrors(cudaMemcpyToArray(cuArray, 0, 0, h_data,   //for cudaMemcpyToArray(), 0, 0--start loaction for copy
 		size, cudaMemcpyHostToDevice));
 
 	//Specify texture object parameters
