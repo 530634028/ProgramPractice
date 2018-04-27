@@ -80,15 +80,16 @@ import numpy as np
 ##print(y.get_shape())
 
 ##"""test for conv2d_transpose() function."""
-##x = tf.random_normal(shape = [1, 3, 3, 1])
-##kernel = tf.random_normal(shape = [2, 2, 3, 1])
-##y = tf.nn.conv2d_transpose(x, kernel, output_shape = [1, 5, 5, 3],
-##                           strides = [1, 2, 2, 1], padding = 'SAME')
-##print(y.get_shape())
-##init = tf.global_variables_initializer()
-##with tf.Session() as sess:
-##    sess.run(init)
-##    print(sess.run(y))
+x = tf.random_normal(shape = [1, 3, 3, 1])
+kernel = tf.random_normal(shape = [2, 2, 3, 1])
+y = tf.nn.conv2d_transpose(x, kernel, output_shape = [1, 5, 5, 3],
+                           strides = [1, 2, 2, 1], padding = 'SAME')
+print(y.get_shape())
+init = tf.global_variables_initializer()
+with tf.Session() as sess:
+    sess.run(init)
+    print(sess.run(y))
+    exit()
 
 
 
