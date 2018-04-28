@@ -129,3 +129,4 @@ Makefile*
 
 # QtCtreator CMake
 CMakeLists.txt.user*
+*.ckpt
