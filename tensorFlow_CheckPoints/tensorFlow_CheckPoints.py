@@ -53,7 +53,7 @@ p_keep_hidden = tf.placeholder("float")
 py_x = model(X, w_h, w_h2, w_o, p_keep_input, p_keep_hidden)
 
 #define loss function
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels = Y, logits = py_x))
+cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels = Y, logits = py_x)) #right or not
 train_op = tf.train.RMSPropOptimizer(0.001, 0.9).minimize(cost)
 predict_op = tf.argmax(py_x, 1)
 
@@ -83,6 +83,20 @@ with tf.Session() as sess:
 
         global_step.assign(i).eval()   #update counter
         saver.save(sess, ckpt_dir + "/model.ckpt", global_step=global_step) #save model
+
+
+############Reload model#################
+with tf.Session() as sess:
+    tf.global_variables_initializer().run()
+
+    ckpt = tf.train.get_checkpoint_state(ckpt_dir)
+    if ckpt and ckpt.model_checkpoint_path:
+        print(ckpt.model_checkpoint_path)
+        saver.restore(sess, ckpt.model_checkpoint_path) #reload all parameters
+        #start here for predict or train
+
+
+
 
                      
 
