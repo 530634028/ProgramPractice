@@ -130,4 +130,12 @@ Makefile*
 # QtCtreator CMake
 CMakeLists.txt.user*
 
+
+#tensorflow
 *.ckpt
+
+checkpoint
+*.data-00000-of-00001
+*.index
+*.meta
+
