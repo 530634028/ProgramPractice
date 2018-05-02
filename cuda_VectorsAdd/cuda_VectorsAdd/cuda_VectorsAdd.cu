@@ -29,7 +29,7 @@ __global__ void addKernel(int *c, const int *a, const int *b)
 }
 
 //1D blocksPerGrid 2D threadsPerBlock matrix add
-__global__ void MatAdd(int A[N][N], int B[N][N], int C[N][N])
+__global__ void MatAdd(int **A, int **B, int **C)
 {
 	int i = threadIdx.x;
 	int j = threadIdx.y;
@@ -37,7 +37,7 @@ __global__ void MatAdd(int A[N][N], int B[N][N], int C[N][N])
 }
 
 //2D blocksPerGrid 2D threadsPerBlock matrix add
-__global__ void MatAdd_2D(int A[N][N], int B[N][N], int C[N][N])
+__global__ void MatAdd_2D(int **A, int **B, int **C)
 {
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
 	int j = blockIdx.y * blockDim.y + threadIdx.y;
@@ -123,9 +123,9 @@ int main(int argc, char *argv[])
 // Helper function for using CUDA to add vectors in parallel.
 cudaError_t addWithCuda2D2D(int c[N][N], const int a[N][N], const int b[N][N], unsigned int size)
 {
-    int dev_a[N][N];
-    int dev_b[N][N];
-    int dev_c[N][N];
+    int **dev_a = NULL;
+    int **dev_b = NULL;
+    int **dev_c = NULL;
     cudaError_t cudaStatus;
 
     // Choose which GPU to run on, change this on a multi-GPU system.
@@ -136,19 +136,19 @@ cudaError_t addWithCuda2D2D(int c[N][N], const int a[N][N], const int b[N][N], u
     }
 
     // Allocate GPU buffers for three vectors (two input, one output)    .
-    cudaStatus = cudaMalloc((void**)&dev_c, size * sizeof(int));
+    cudaStatus = cudaMalloc((void**)&dev_c, N * sizeof(int *));
     if (cudaStatus != cudaSuccess) {
         fprintf(stderr, "cudaMalloc failed!");
         goto Error;
     }
 
-    cudaStatus = cudaMalloc((void**)&dev_a, size * sizeof(int));
+    cudaStatus = cudaMalloc((void**)&dev_a, N * sizeof(int *));
     if (cudaStatus != cudaSuccess) {
         fprintf(stderr, "cudaMalloc failed!");
         goto Error;
     }
 
-    cudaStatus = cudaMalloc((void**)&dev_b, size * sizeof(int));
+    cudaStatus = cudaMalloc((void**)&dev_b, N * sizeof(int *));
     if (cudaStatus != cudaSuccess) {
         fprintf(stderr, "cudaMalloc failed!");
         goto Error;
@@ -210,9 +210,9 @@ Error:
 // Helper function for using CUDA to add vectors in parallel.
 cudaError_t addWithCuda1D2D(int c[N][N], const int a[N][N], const int b[N][N], unsigned int size)
 {
-    int dev_a[N][N];
-    int dev_b[N][N];
-    int dev_c[N][N];
+    int **dev_a = NULL;
+    int **dev_b = NULL;
+    int **dev_c = NULL;
     cudaError_t cudaStatus;
 
     // Choose which GPU to run on, change this on a multi-GPU system.
@@ -223,19 +223,19 @@ cudaError_t addWithCuda1D2D(int c[N][N], const int a[N][N], const int b[N][N], u
     }
 
     // Allocate GPU buffers for three vectors (two input, one output)    .
-    cudaStatus = cudaMalloc((void**)&dev_c, size * sizeof(int));
+    cudaStatus = cudaMalloc((void**)&dev_c, N * sizeof(int *));
     if (cudaStatus != cudaSuccess) {
         fprintf(stderr, "cudaMalloc failed!");
         goto Error;
     }
 
-    cudaStatus = cudaMalloc((void**)&dev_a, size * sizeof(int));
+    cudaStatus = cudaMalloc((void**)&dev_a, N * sizeof(int *));
     if (cudaStatus != cudaSuccess) {
         fprintf(stderr, "cudaMalloc failed!");
         goto Error;
     }
 
-    cudaStatus = cudaMalloc((void**)&dev_b, size * sizeof(int));
+    cudaStatus = cudaMalloc((void**)&dev_b, N * sizeof(int *));
     if (cudaStatus != cudaSuccess) {
         fprintf(stderr, "cudaMalloc failed!");
         goto Error;
