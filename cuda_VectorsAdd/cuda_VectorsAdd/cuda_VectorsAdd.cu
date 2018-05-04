@@ -32,19 +32,23 @@ __global__ void addKernel(int *c, const int *a, const int *b)
 }
 
 //1D blocksPerGrid 2D threadsPerBlock matrix add
-__global__ void MatAdd(int *A, int *B, int *C)
+__global__ void MatAdd(int *C, int *A, int *B)   //wrong here C, A, B write to A B C
 {
 	int i = threadIdx.x;
 	int j = threadIdx.y;
-	C[j * blockDim.x + i] = B[j * blockDim.x + i] + C[j * blockDim.x + i];
+
+	//int index = blockDim.x * threadIdx.y + threadIdx.x;
+	//C[index] = A[index] + B[index];    //here wrong write C[j * blockDim.x + i] = B[j * blockDim.x + i] + C(need to mend A)[j * blockDim.x + i];
+
+	C[j * blockDim.x + i] = A[j * blockDim.x + i] + B[j * blockDim.x + i];
 }
 
 //2D blocksPerGrid 2D threadsPerBlock matrix add
-__global__ void MatAdd_2D(int *A, int *B, int *C)
+__global__ void MatAdd_2D(int *C, int *A, int *B)
 {
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
 	int j = blockIdx.y * blockDim.y + threadIdx.y;
-	C[j * blockDim.x * gridDim.x + i] = B[j * blockDim.x * gridDim.x + i] + C[j * blockDim.x * gridDim.x + i];
+	C[j * blockDim.x * gridDim.x + i] = B[j * blockDim.x * gridDim.x + i] + A[j * blockDim.x * gridDim.x + i];
 }
 
 // Helper function for using CUDA to add vectors in parallel.
@@ -130,10 +134,18 @@ Error:
 // Helper function for using CUDA to add vectors in parallel.
 cudaError_t addWithCuda1D2D(int *c, int *a, int *b, unsigned int size)
 {
-    int *dev_a = NULL;
-    int *dev_b = NULL;
-    int *dev_c = NULL;
+    int *dev_a = 0;
+    int *dev_b = 0;
+    int *dev_c = 0;
     cudaError_t cudaStatus;
+
+//#ifndef DEBUG
+//	for(int i = 0; i < 5; ++i)
+//	{
+//		std::cout << b[i] << " ";
+//	}
+//
+//#endif
 
     //// Choose which GPU to run on, change this on a multi-GPU system.
     cudaStatus = cudaSetDevice(0);
@@ -176,7 +188,7 @@ cudaError_t addWithCuda1D2D(int *c, int *a, int *b, unsigned int size)
 
 
 	int numBlocks = 1;
-	dim3 threadsPerBlock(N, N);
+	dim3 threadsPerBlock(32, 32);
     // Launch a kernel on the GPU with one thread for each element.
     MatAdd<<<numBlocks, threadsPerBlock>>>(dev_c, dev_a, dev_b);
 
@@ -202,6 +214,12 @@ cudaError_t addWithCuda1D2D(int *c, int *a, int *b, unsigned int size)
         fprintf(stderr, "cudaMemcpy failed!");
         goto Error;
     }
+
+	//for(int i = 0; i < 5; ++i)
+	//{
+	//	std::cout << c[i] << " ";
+	//}
+
 
 Error:
     cudaFree(dev_c);
@@ -327,6 +345,7 @@ int main(int argc, char *argv[])
 
 
 
+	/******************************************************/
 	//For 2D matrix add
 	int *A; 
 	int *B;
@@ -369,7 +388,7 @@ int main(int argc, char *argv[])
         return 1;
     }
     printf("A + B = {%d,%d,%d}\n",
-        C[0], C[1], C[20]);
+        C[0], C[1], C[100]);
 	std::cout << std::endl;
 
 	// cudaDeviceReset must be called before exiting in order for profiling and
@@ -390,7 +409,7 @@ int main(int argc, char *argv[])
     printf("A + B = {%d,%d,%d}\n",
         C[0], C[1], C[20]);
 
-	//free malloc
+
 
     return 0;
 }
