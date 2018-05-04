@@ -25,7 +25,6 @@ __global__ void MatAdd(int **A, int **B, int **C)
 	C[i][j] = A[i][j] + B[i][j];
 }
 
-
 // Helper function for using CUDA to add vectors in parallel.
 cudaError_t addWithCuda1D2D(int **A, int **B, int **C, unsigned int size)
 {
@@ -198,7 +197,6 @@ int main(int argc, char *argv[])
 	cudaFree((void *)dev_A);
 	free(A);
 	free(dataA);
-
 
     //cudaError_t cudaStatus = cudaDeviceReset();
     //if (cudaStatus != cudaSuccess) {
