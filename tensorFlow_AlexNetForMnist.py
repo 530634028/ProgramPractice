@@ -36,8 +36,8 @@ keep_prob = tf.placeholder(tf.float32) #dropout
 
 """define conv, pool, normal function for AlexNet"""
 #define convolution operations
-def conv2d(name, x, W, b, strides=1):
-    x = tf.nn.conv2d(x, W, strides = [1, strides, strides, 1], padding = 'SAME')
+def conv2d(name, x, w, b, strides=1):
+    x = tf.nn.conv2d(x, w, strides = [1, strides, strides, 1], padding = 'SAME')
     x = tf.nn.bias_add(x, b)
     return tf.nn.relu(x, name=name) #utilize relu active function
 
