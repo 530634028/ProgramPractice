@@ -90,7 +90,7 @@ def alex_net(x, weights, biases, dropout):
 
     """second layer conv"""
     #convolutin
-    conv2 = conv2d('conv2', norm1, weights['wc2'], biases['bc2'])
+    conv2 = conv2d('conv2', conv1, weights['wc2'], biases['bc2'])
     #maxpool(downsampling)
     pool2 = maxpool2d('pool2', conv2, k=2)
     #normalize
