@@ -20,7 +20,7 @@ mnist = input_data.read_data_sets("F:/data/MNIST_data", one_hot=True)
 
 #define hyperparameters of net
 learning_rate = 0.001
-training_iters = 200000
+training_iters = 200000   #200000
 batch_size = 128
 display_step = 10
 
@@ -140,7 +140,8 @@ def alex_net(x, weights, biases, dropout):
 pred = alex_net(x, weights, biases, keep_prob)
 
 #define loss function and optimizer
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = pred, labels = y))
+cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = pred,
+                                                              labels = y))
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 
 #estimate function
@@ -157,7 +158,7 @@ with tf.Session() as sess:
     #launch training, until training_iters = 200000
     while step * batch_size < training_iters:
         batch_x, batch_y = mnist.train.next_batch(batch_size)
-        sess.run(optimizer, feed_dict={x: batch_x, y: batch_y,
+        sess.run(optimizer, feed_dict={x: batch_x, y: batch_y, #errors here
                                        keep_prob: dropout})
         if step % display_step == 0:
             #calculate accuracy and loss value
@@ -168,6 +169,7 @@ with tf.Session() as sess:
                   "{:.6f}".format(loss) + ", Training Accuracy= " + \
                   "{:.5f}".format(acc))
         step += 1
+        
     print("Optimization Finished!")
 
     #calculate accucary of test sets
