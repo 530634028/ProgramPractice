@@ -16,7 +16,7 @@ import numpy
 
 
 """input dataset"""
-mnist = input_data.read_data_sets("F:/data/MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("E:/data/MNIST_data", one_hot=True)
 
 #define hyperparameters of net
 learning_rate = 0.001
