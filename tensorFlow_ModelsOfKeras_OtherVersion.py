@@ -44,7 +44,7 @@ X_test, y_test = mnist.test.images, mnist.test.labels
 X_train = X_train.reshape(len(X_train), -1)
 X_test = X_test.reshape(len(X_test), -1)
 
-# uint不能有负数，我们先转为float类型
+# uint transform to float32 
 X_train = X_train.astype('float32')
 X_test = X_test.astype('float32')
 X_train = (X_train - 127) / 127
@@ -74,24 +74,6 @@ model.fit(X_train, y_train, epochs=20, batch_size=64, verbose=1, validation_spli
 loss, accuracy = model.evaluate(X_test, y_test)
 print('Test loss:', loss)
 print('Accuracy:', accuracy)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
