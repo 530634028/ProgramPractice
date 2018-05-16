@@ -104,7 +104,7 @@ with tf.Session() as sess:
     #test in test dataset
     encode_decode = sess.run(y_pred, feed_dict={X: mnist.test.images[:examples_to_show]})
     #compare origin images between images established by encoder
-    f, a = plt.subplots(2, 10, figsize=(10, 2))
+    f, a = plt.subplots(2, examples_to_show, figsize=(examples_to_show, 2))
     for i in range(examples_to_show):
         a[0][i].imshow(np.reshape(mnist.test.images[i], (28, 28))) #test data
         a[1][i].imshow(np.reshape(encode_decode[i], (28, 28))) #establih data
