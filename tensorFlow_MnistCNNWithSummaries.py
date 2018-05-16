@@ -9,9 +9,29 @@ import tensorflow as tf
 import numpy as np
 from tensorflow.examples.tutorials.mnist import input_data
 
+
+"""input data"""
+mnist = input_data.read_data_sets("F:\data\MNIST_data", one_hot=True)
+trX, trY = mnist.train.images, mnist.train.labels
+teX, teY = mnist.test.images, mnist.test.labels
+
+trX = trX.reshape(-1, 28, 28, 1) #28x28x1 input img
+teX = teX.reshape(-1, 28, 28, 1) #28x28x1 input img
+
+X = tf.placeholder("float", [None, 28, 28, 1])
+Y = tf.placeholder("float", [None, 10])
+
 """initilize werights"""
 def init_weights(shape):
     return tf.Variable(tf.random_normal(shape, stddev=0.01))
+
+w = init_weights([3, 3, 1, 32])  #patch size 3x3, input dim 1, output dim 32
+w2 = init_weights([3, 3, 32, 64])#patch size 3x3, input dim 32, output dim 64
+w3 = init_weights([3, 3, 64, 128])#patch size 3x3, input dim 64, output dim 128
+w4 = init_weights([128 * 4 * 4, 625])
+#full connect, input dim 128x4x4 is ouput of poir layer(3D-1D), output dim 625
+w_o = init_weights([625, 10]) #ouput layer,input dim 625, output dim 10(represent 10 labels)
+
 
 """define CNN model"""
 #X:input data w:weights of each layer
@@ -47,23 +67,6 @@ def model(X, w, w2, w3, w4, w_o, p_keep_conv, p_keep_hidden):
     pyx = tf.matmul(l4, w_o)
     return pyx #return predict value
 
-"""input data"""
-mnist = input_data.read_data_sets("F:\data\MNIST_data", one_hot=True)
-trX, trY = mnist.train.images, mnist.train.labels
-teX, teY = mnist.test.images, mnist.test.labels
-
-trX = trX.reshape(-1, 28, 28, 1) #28x28x1 input img
-teX = teX.reshape(-1, 28, 28, 1) #28x28x1 input img
-
-X = tf.placeholder("float", [None, 28, 28, 1])
-Y = tf.placeholder("float", [None, 10])
-
-w = init_weights([3, 3, 1, 32])  #patch size 3x3, input dim 1, output dim 32
-w2 = init_weights([3, 3, 32, 64])#patch size 3x3, input dim 32, output dim 64
-w3 = init_weights([3, 3, 64, 128])#patch size 3x3, input dim 64, output dim 128
-w4 = init_weights([128 * 4 * 4, 625])
-#full connect, input dim 128x4x4 is ouput of poir layer(3D-1D), output dim 625
-w_o = init_weights([625, 10]) #ouput layer,input dim 625, output dim 10(represent 10 labels)
 
 """define placeholder and create net"""
 p_keep_conv = tf.placeholder("float")
