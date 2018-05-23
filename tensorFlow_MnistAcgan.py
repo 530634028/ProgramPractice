@@ -76,8 +76,8 @@ def build_generator(latent_size):
     image_class = Input(shape=(1,), dtype='int32')
 
     cls = Flatten()(Embedding(10, latent_size, init='glorot_normal')(image_class))
-##    h = merge([latent, cls], mode='mul')
-    h = layers.multiply([latent, cls])
+    h = merge([latent, cls], mode='mul')
+##    h = layers.multiply([latent, cls])
     
     fake_image = cnn(h)  #output fake image
     return Model(input=[latent, image_class], output = fake_image)
@@ -139,8 +139,8 @@ if __name__ == '__main__':
 
     #construct generator net
     generator = build_generator(latent_size)
-##    generator.compile(optimizer=Adam(lr=adam_lr, beta_1=adam_beta_1),
-##                      loss='binary_crossentropy')
+    generator.compile(optimizer=Adam(lr=adam_lr, beta_1=adam_beta_1),
+                      loss='binary_crossentropy')
 
     latent = Input(shape=(latent_size, ))
     image_class = Input(shape=(1,), dtype='int32')
