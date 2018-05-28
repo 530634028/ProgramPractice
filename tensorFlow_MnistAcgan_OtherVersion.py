@@ -47,7 +47,7 @@ num_classes = 10
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 
-mnist = input_data.read_data_sets("F:\data\MNIST_data", one_hot=True);
+##mnist = input_data.read_data_sets("F:\data\MNIST_data", one_hot=True);
 
 def build_generator(latent_size):
     # we will map a pair of (z, L), where z is a latent vector and L is a
@@ -173,13 +173,13 @@ if __name__ == '__main__':
     # range [-1, 1]
 
     
-##    (x_train, y_train), (x_test, y_test) = mnist.load_data()
-    x_train, y_train = mnist.train.images, mnist.train.labels
-    x_test, y_test = mnist.test.images, mnist.test.labels
-    
-    x_train = x_train.reshape([x_train.shape[0], 28, 28])
-    x_test = x_test.reshape([x_test.shape[0], 28, 28])
-    print(x_train.shape)
+    (x_train, y_train), (x_test, y_test) = mnist.load_data()
+##    x_train, y_train = mnist.train.images, mnist.train.labels
+##    x_test, y_test = mnist.test.images, mnist.test.labels
+##    
+##    x_train = x_train.reshape([x_train.shape[0], 28, 28])
+##    x_test = x_test.reshape([x_test.shape[0], 28, 28])
+##    print(x_train.shape)
     
     x_train = (x_train.astype(np.float32) - 127.5) / 127.5
     x_train = np.expand_dims(x_train, axis=-1)
