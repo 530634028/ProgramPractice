@@ -142,5 +142,6 @@ checkpoint
 #data
 17flowers/
 data/
+*.jpg
 
 
