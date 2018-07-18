@@ -14,7 +14,7 @@ from keras.layers.core import Dense
 from keras import backend as K
 
 class ShallowNet:
-    #static method
+    #@staticmethod
     def build(width, height, depth, classes):
         # initialize the model along with the input shape to be
         # "channels last"
@@ -27,7 +27,7 @@ class ShallowNet:
 
         # define the first (and only) CONV => RELU layer
         model.add(Conv2D(32, (3, 3), padding="same",
-                         input_Shape=inputShape))
+                         input_shape=inputShape))
         model.add(Activation("relu"))
 
         # softmax classifier
