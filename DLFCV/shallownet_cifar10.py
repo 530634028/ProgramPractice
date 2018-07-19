@@ -8,7 +8,7 @@
 # import the necessary packages
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.metrics import classification_report
-from pyimagesearch.nn.conv import shallownet
+from pyimagesearch.nn.conv.shallownet import ShallowNet
 from keras.optimizers import SGD
 from keras.datasets import cifar10
 import matplotlib.pyplot as plt
@@ -33,7 +33,7 @@ labelNames = ["airplane", "automobile", "bird", "cat", "deer",
 # initialize the optimizer and model
 print("[INFO] compiling model...")
 opt = SGD(lr=0.01)
-model = shallownet.ShallowNet.build(width=32, height=32, depth=3, classes=10)
+model = ShallowNet.build(width=32, height=32, depth=3, classes=10)
 model.compile(loss="categorical_crossentropy", optimizer=opt,
               metrics=["accuracy"])
 
@@ -61,32 +61,4 @@ plt.xlabel("Epoch #")
 plt.ylabel("Loss/Accuarcy")
 plt.legend()
 plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
