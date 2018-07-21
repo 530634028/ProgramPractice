@@ -1,5 +1,5 @@
 #
-# Train shallownet on animal dataset
+# Train shallownet on animal dataset 
 # a: zhonghy
 # date: 2018-7-18
 #
