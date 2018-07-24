@@ -142,6 +142,5 @@ checkpoint
 #data
 17flowers/
 data/
-*.jpg
 __pycache__/
 
