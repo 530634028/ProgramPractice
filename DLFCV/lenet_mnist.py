@@ -24,8 +24,9 @@ import numpy as np
 # script, the download may take a minute -- the 55MB MNIST dataset
 # will be downloaded)
 print("[INFO] loading MNIST (full) dataset...")
-dataset = input_data.read_data_sets("F:\\data\\MNIST_data", one_hot=True)
-#dataset = datasets.fetch_mldata("F:\\data\\MNIST_data") #("MNIST Original")
+dataset = input_data.read_data_sets("F:\\data\\MNIST_data")#, one_hot=True)
+##dataset = datasets.fetch_mldata("MNIST Original")
+##data = dataset.data
 
 # scale the raw pixel intensities to the range [0, 1.0], then
 # construct the training and testing splits
@@ -49,10 +50,14 @@ else:
     trainX = trainX.reshape(trainX.shape[0], 28, 28, 1)
     testX = testX.reshape(testX.shape[0],  28, 28, 1)
 
+
+##(trainX, testX, trainY, testY) = train_test_split(data / 255.0,
+##                         dataset.target("int"), test_size=0.25, random_state=42)
+
 # convert the labels from integers to vectors
 le = LabelBinarizer()
 trainY = le.fit_transform(trainY)
-testY = le.transform(testY)
+testY = le.fit_transform(testY)  # attention in book is transform()?????
 
 # intialize the optimizer and model
 print("[INFO] compiling model...")
