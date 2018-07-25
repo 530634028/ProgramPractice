@@ -35,9 +35,9 @@ dataset = input_data.read_data_sets("F:\\data\\MNIST_data")#, one_hot=True)
 ##                                                  dataset.target, test_size=0.25)
 trainX, trainY = dataset.train.images, dataset.train.labels
 testX, testY = dataset.test.images, dataset.test.labels
-trainX = trainX.astype("float") / 255.0
+trainX = trainX.astype("float")
 #trainY = trainY.astype("float") / 255.0
-testX = testX.astype("float") / 255.0
+testX = testX.astype("float")
 #testY = testY.astype("float") / 255.0
 
 # if we are using "channels first" ordering, then reshape the
@@ -90,6 +90,12 @@ plt.xlabel("Epoch #")
 plt.ylabel("Loss/Accuarcy")
 plt.legend()
 plt.show()
+
+#########################################
+# save the network to disk
+print("[INFO] serializing network...")
+model.save("lenet_on_mnist.hdf5")
+#########################################
 
 
 

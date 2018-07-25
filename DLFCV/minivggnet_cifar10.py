@@ -53,12 +53,6 @@ print("[INFO] training network...")
 H = model.fit(trainX, trainY, validation_data=(testX, testY),
               batch_size=64, epochs=40, verbose=1)
 
-#########################################
-# save the network to disk
-print("[INFO] serializing network...")
-model.save("MiniVGGNet_on_cifar10")
-#########################################
-
 # evaluate the network
 print("[INFO] evaluating network...")
 predictions = model.predict(testX, batch_size=64)
@@ -79,5 +73,11 @@ plt.ylabel("Loss/Accuarcy")
 plt.legend()
 plt.show()
 ##plt.savefig(args["output"])
+
+#########################################
+# save the network to disk
+print("[INFO] serializing network...")
+model.save("MiniVGGNet_on_cifar10")
+#########################################
 
 
