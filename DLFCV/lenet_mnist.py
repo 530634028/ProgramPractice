@@ -57,7 +57,7 @@ else:
 # convert the labels from integers to vectors
 le = LabelBinarizer()
 trainY = le.fit_transform(trainY)
-testY = le.fit_transform(testY)  # attention in book is transform()?????
+testY = le.transform(testY)  # attention in book is transform()?????
 
 # intialize the optimizer and model
 print("[INFO] compiling model...")
