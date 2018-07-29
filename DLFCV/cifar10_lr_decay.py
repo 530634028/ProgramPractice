@@ -24,7 +24,7 @@ def step_decay(epoch):
     # initialize the base initial learning rate, drop factor, and
     # epochs to drop every
     initAlpha = 0.01
-    factor = 0.25
+    factor = 0.25 #0.5 larger drop slower, and more accuracy
     dropEvery = 5
     
     # compute learning rate for the current epoch
@@ -71,12 +71,6 @@ print("[INFO] training network...")
 H = model.fit(trainX, trainY, validation_data=(testX, testY),
               batch_size=64, epochs=40, callbacks=callbacks, verbose=1)
 
-#########################################
-# save the network to disk
-print("[INFO] serializing network...")
-model.save("MiniVGGNet_on_cifar10")
-#########################################
-
 # evaluate the network
 print("[INFO] evaluating network...")
 predictions = model.predict(testX, batch_size=64)
@@ -97,5 +91,11 @@ plt.ylabel("Loss/Accuarcy")
 plt.legend()
 plt.show()
 ##plt.savefig(args["output"])
+
+#########################################
+# save the network to disk
+print("[INFO] serializing network...")
+model.save("MiniVGGNet_on_cifar10_with_decay.hdf5")
+#########################################
 
 

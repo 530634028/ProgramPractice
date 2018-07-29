@@ -51,15 +51,15 @@ model.compile(loss="categorical_crossentropy", optimizer=opt,
               metrics=["accuracy"])
 
 # construct the set of callbacks
-figPath = os.path.sep.join([args["output"], "{}.png".format(
-    os.getpid())])
-jsonPath = os.path.sep.join([args["output"], "{}.json".format(
-    os.getpid())])
+figPath = os.path.sep.join("E:\\ZWDX_Learn\\ProgramPractice\\DLFCV\\TrainResult\\output", "{}.png".format(
+    os.getpid())]) # [args["output"]
+jsonPath = os.path.sep.join("E:\\ZWDX_Learn\\ProgramPractice\\DLFCV\\TrainResult\\output", "{}.json".format(
+    os.getpid())]) # [args["output"]
 callbacks = [TrainingMonitor(figPath, jsonPath=jsonPath)]
 
 # train the network
 print("[INFO] training network...")
-H = model.fit(trainX, trainY, validation_data=(testX, testY),
+model.fit(trainX, trainY, validation_data=(testX, testY),
               batch_size=64, epochs=100, callbacks=callbacks, verbose=1)
 
 ###########################################
