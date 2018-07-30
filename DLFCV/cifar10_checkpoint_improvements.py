@@ -8,17 +8,17 @@
 # import the necessary packages
 from sklearn.preprocessing import LabelBinarizer
 from pyimagesearch.nn.conv.minivggnet import MiniVGGNet
-from keras.callbacks import ModelCheckpoints
+from keras.callbacks import ModelCheckpoint
 from keras.optimizers import SGD
 from keras.datasets import cifar10
 import argparse
 import os
 
-# construct the argument parse and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-w", "--weights", required=True,
-                help="path to weights directory")
-args = vars(ap.parse_args())
+### construct the argument parse and parse the arguments
+##ap = argparse.ArgumentParser()
+##ap.add_argument("-w", "--weights", required=True,
+##                help="path to weights directory")
+##args = vars(ap.parse_args())
 
 # load the training and testing data, then scale it into the
 # range [0, 1]
@@ -30,7 +30,7 @@ testX = testX.astype("float") / 255.0
 # convert the labels from integers to vectors
 lb = LabelBinarizer()
 trainY = lb.fit_transform(trainY)
-testY = lb.fit_transform(testY)
+testY = lb.transform(testY)
 
 # initialize the label names for the CIFAR-10 dataset
 labelNames = ["airplane", "automobile", "bird", "cat", "deer",
@@ -38,15 +38,15 @@ labelNames = ["airplane", "automobile", "bird", "cat", "deer",
 
 # initialize the optimizer and model
 print("[INFO] compiling model...")
-opt = SGD(lr=0.01, decay=0.0 / 40, momentum=0.9, nesterov=True) # attention
+opt = SGD(lr=0.01, decay=0.01 / 40, momentum=0.9, nesterov=True) # attention
 model = MiniVGGNet.build(width=32, height=32, depth=3, classes=10)
 model.compile(loss="categorical_crossentropy", optimizer=opt,
               metrics=["accuracy"])
 
 # construct the callback to save only the *best* model to disk
 # based on the validation loss
-fname = os.path.sep.join([args["weights"],
-                        "weights-{epoch:03d}-{val_loss:.4f}.hdf5")
+fname = os.path.sep.join(["F:\\data",
+                        "weights-{epoch:03d}-{val_loss:.4f}.hdf5"]) #args["weights"]
 checkpoint = ModelCheckpoint(fname, monitor="val_loss", mode="min")
 callbacks = [checkpoint]
 

@@ -8,7 +8,7 @@
 # import the necessary packages
 from sklearn.preprocessing import LabelBinarizer
 from pyimagesearch.nn.conv.minivggnet import MiniVGGNet
-from keras.callbacks import ModelCheckpoints
+from keras.callbacks import ModelCheckpoint
 from keras.optimizers import SGD
 from keras.datasets import cifar10
 import argparse
@@ -30,7 +30,7 @@ testX = testX.astype("float") / 255.0
 # convert the labels from integers to vectors
 lb = LabelBinarizer()
 trainY = lb.fit_transform(trainY)
-testY = lb.fit_transform(testY)
+testY = lb.transform(testY)
 
 # initialize the label names for the CIFAR-10 dataset
 labelNames = ["airplane", "automobile", "bird", "cat", "deer",
@@ -38,7 +38,7 @@ labelNames = ["airplane", "automobile", "bird", "cat", "deer",
 
 # initialize the optimizer and model
 print("[INFO] compiling model...")
-opt = SGD(lr=0.01, decay=0.0 / 40, momentum=0.9, nesterov=True) # attention
+opt = SGD(lr=0.01, decay=0.01 / 40, momentum=0.9, nesterov=True) # attention
 model = MiniVGGNet.build(width=32, height=32, depth=3, classes=10)
 model.compile(loss="categorical_crossentropy", optimizer=opt,
               metrics=["accuracy"])

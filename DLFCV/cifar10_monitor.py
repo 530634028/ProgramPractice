@@ -10,7 +10,7 @@ import matplotlib
 matplotlib.use("Agg")
 
 # import the necessary packages
-from pyimagesearch.callbacks.trainingmointor import TrainingMointor
+from pyimagesearch.callbacks.trainingmonitor import TrainingMonitor
 from sklearn.preprocessing import LabelBinarizer
 from pyimagesearch.nn.conv.minivggnet import MiniVGGNet
 from keras.optimizers import SGD
@@ -51,22 +51,22 @@ model.compile(loss="categorical_crossentropy", optimizer=opt,
               metrics=["accuracy"])
 
 # construct the set of callbacks
-figPath = os.path.sep.join([args["output"], "{}.png".format(
-    os.getpid())])
-jsonPath = os.path.sep.join([args["output"], "{}.json".format(
-    os.getpid())])
+figPath = os.path.sep.join(["F:\\data", "{}.png".format(
+    os.getpid())]) #args["output"]
+jsonPath = os.path.sep.join(["F:\\data", "{}.json".format(
+    os.getpid())])# [args["output"]
 callbacks = [TrainingMonitor(figPath, jsonPath=jsonPath)]
 
 # train the network
 print("[INFO] training network...")
-H = model.fit(trainX, trainY, validation_data=(testX, testY),
+model.fit(trainX, trainY, validation_data=(testX, testY),
               batch_size=64, epochs=100, callbacks=callbacks, verbose=1)
 
-###########################################
-### save the network to disk
-##print("[INFO] serializing network...")
-##model.save("MiniVGGNet_on_cifar10")
-###########################################
+#########################################
+# save the network to disk
+print("[INFO] serializing network...")
+model.save("MiniVGGNet_on_cifar10_without_decay.hdf5")
+#########################################
 ##
 ### evaluate the network
 ##print("[INFO] evaluating network...")
