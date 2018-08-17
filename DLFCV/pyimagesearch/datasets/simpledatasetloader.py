@@ -10,7 +10,7 @@ import cv2
 import os
 
 class SimpleDatasetLoader:
-    def __init__(self, preprocess=None):
+    def __init__(self, preprocessors=None):
         # store the image preprocessor
         self.preprocessors = preprocessors
 
