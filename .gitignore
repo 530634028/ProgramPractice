@@ -143,4 +143,5 @@ checkpoint
 17flowers/
 data/
 __pycache__/
+.idea/
 
