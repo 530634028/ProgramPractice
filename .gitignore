@@ -37,7 +37,7 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
-[Bb]uild*
+#[Bb]uild*
 [Ll]ibs
 3rd[Pp]arty
 
