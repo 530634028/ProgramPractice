@@ -28,6 +28,10 @@ trainPaths = list(paths.list_images(config.IMAGES_PATH))
 
 trainLabels = [p.split(os.path.sep)[1].split(".")[0]   # 2 or 1???
                for p in trainPaths]
+
+#['../../../data/kaggle_dogs_vs_cats/train', 'cat.0.jpg']
+
+
 le = LabelEncoder()
 trainLabels = le.fit_transform(trainLabels)
 
