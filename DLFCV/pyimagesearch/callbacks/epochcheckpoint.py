@@ -28,4 +28,5 @@ class EpochCheckpoint(BaseLogger):
             fname = os.path.sep.join([self.startPath,
                                       "weights-{epoch:03d}.hdf5"])
             checkpoint = ModelCheckpoint(fname, monitor="epoch", mode="max")
+            return checkpoint
             #callbacks = [checkpoint]
