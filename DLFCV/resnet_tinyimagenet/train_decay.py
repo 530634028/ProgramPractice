@@ -102,11 +102,11 @@ model.compile(loss="categorical_crossentropy", optimizer=opt,
 print("[INFO] training network...")
 model.fit_generator(
     trainGen.generator(),
-    steps_per_epoch=trainGen.numImages // 64,
+    steps_per_epoch=trainGen.numImages // 64, # 64
     validation_data=valGen.generator(),
-    validation_steps=valGen.numImages // 64,
+    validation_steps=valGen.numImages // 64,  # 64
     epochs=NUM_EPOCHS,
-    max_queue_size=64 * 2,
+    max_queue_size=64 * 2,  # 64
     callbacks=callbacks,
     verbose=1
 )
