@@ -10,7 +10,8 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 
 import sys;
-sys.path.append("F:\ProgramPractice\DLFCV")
+#sys.path.append("F:\ProgramPractice\DLFCV")
+sys.path.append("E:\ZWDX_Learn\ProgramPractice\DLFCV")
 
 from pyimagesearch.io.hdf5datasetwriter import HDF5DatasetWriter
 from imutils import paths

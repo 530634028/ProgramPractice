@@ -12,7 +12,8 @@ matplotlib.use("Agg")
 from config import tiny_imagenet_config as config
 
 import sys;
-sys.path.append("F:\ProgramPractice\DLFCV")
+#sys.path.append("F:\ProgramPractice\DLFCV")
+sys.path.append("E:\ZWDX_Learn\ProgramPractice\DLFCV")
 
 from pyimagesearch.preprocessing.imagetoarraypreprocessor import ImageToArrayPreprocessor
 from pyimagesearch.preprocessing.simplepreprocessor import SimplePreprocessor
