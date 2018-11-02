@@ -224,8 +224,8 @@ int main(int argc, char *argv[])
 {
 	//Host allocate for A B C
 	Matrix A;
-	A.width = 128;    //A.width less than B.width. program work? 
-	A.height = 32;
+	A.width = 1024;    //A.width less than B.width. program work? 
+	A.height = 1024;
 	//A.elements = (float*)malloc(A.width * A.height * sizeof(float));
 	A.elements = new float[A.width * A.height];
 	for(int i = 0; i < A.width; ++i)
@@ -238,8 +238,8 @@ int main(int argc, char *argv[])
 	}
 	
 	Matrix B;
-	B.width = 64;
-	B.height = 128;
+	B.width = 1024;
+	B.height = 1024;
 	//B.elements = (float*)malloc(B.width * B.height * sizeof(float));
 	B.elements = new float[B.width * B.height];
 	for(int i = 0; i < B.width; ++i)

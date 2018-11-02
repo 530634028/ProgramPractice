@@ -39,7 +39,6 @@ __global__ void testKernel(int *c, const int *a, const int *b)
 	}
 }
 
-
 //add callback functions 2018-4-23 zhong
 void CUDART_CB MyCallback(cudaStream_t stream, cudaError_t status, void *data)
 {
@@ -213,8 +212,6 @@ int UsedStreams()
 	return 0;
 }
 
-
-
 //staged concurrent copy and execute
 int UsedStagedStreams() //something wrong, why faster than UsedStreams
 {
@@ -369,8 +366,6 @@ int UsedStagedStreams() //something wrong, why faster than UsedStreams
 
 	return 0;
 }
-
-
 
 int main(int argc, char *argv[])
 {

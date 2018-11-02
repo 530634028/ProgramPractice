@@ -85,24 +85,35 @@ class ImageNetHelper:
         paths = []
         labels = []
 
+        # load the contentss of the file that lists the partial
+        # validation image filename
+        valFilenames = open(self.config.VAL_LIST).read()
+        valFilenames = valFilenames.strip().split("\n")
 
+        # load the contents of the file that contains the actual
+        # ground-truth integer class labels for the validation set
+        valLabels = open(self.config.VAL_LABELS).read()
+        valLabels = valLabels.strip().split("\n")
 
+        # loop over the validation data
+        for (row, label) in zip(valFilenames, valLabels):
+            # break the row into the partial path and image number
+            (partialPath, imageNum) = row.strip().split(" ")
 
+            # if the image number is in the blacklist set then we
+            # should ignore this validation image
+            if imageNum in self.valBlacklist:
+                continue
 
+            # construct the full path to the validation image, then
+            # update the respective paths and labels lists
+            path = os.path.sep.join([self.config.IMAGES_PATH, "val",
+                                     "{}.JEPG".format(partialPath)])
+            paths.append(path)
+            labels.append(int(label) - 1)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        # return a tuple of image paths and associated integer class
+        # labels
+        return (np.array(paths), np.array(labels))
 
 
