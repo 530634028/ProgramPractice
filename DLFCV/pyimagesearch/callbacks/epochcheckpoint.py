@@ -1,8 +1,9 @@
-#
+"""
 # Save model every NUM epochs
 # a : zhonghy
 # date: 2018-9-6
-#
+
+"""
 
 # import necessary packages
 from keras.callbacks import ModelCheckpoint
@@ -24,9 +25,9 @@ class EpochCheckpoint(BaseLogger):
         # construct the callback to save only the *best* model to disk
         # based on the validation loss
 
-        if epoch // 5 == 0:
+        if epoch % 1 == 0:
             fname = os.path.sep.join([self.startPath,
                                       "weights-{epoch:03d}.hdf5"])
-            checkpoint = ModelCheckpoint(fname, monitor="epoch", mode="max")
-            return checkpoint
+            checkpoint = ModelCheckpoint(fname, monitor="val_acc", mode="max")
+            #return checkpoint
             #callbacks = [checkpoint]

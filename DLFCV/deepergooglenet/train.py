@@ -12,8 +12,8 @@ matplotlib.use("Agg")
 from config import tiny_imagenet_config as config
 
 import sys;
-#sys.path.append("F:\ProgramPractice\DLFCV")
-sys.path.append("E:\ZWDX_Learn\ProgramPractice\DLFCV")
+sys.path.append("F:\ProgramPractice\DLFCV")
+#sys.path.append("E:\ZWDX_Learn\ProgramPractice\DLFCV")
 
 from pyimagesearch.preprocessing.imagetoarraypreprocessor import ImageToArrayPreprocessor
 from pyimagesearch.preprocessing.simplepreprocessor import SimplePreprocessor
@@ -87,7 +87,7 @@ else:
 
 # construct the set of callbacks
 callbacks = [
-    EpochCheckpoint(args["checkpoints"], every=5,
+    EpochCheckpoint(args["checkpoints"], every=1,
                     startAt=args["start_epoch"]),
     TrainingMonitor(config.FIG_PATH, jsonPath=config.JSON_PATH,
                     startAt=args["start_epoch"])
