@@ -1,5 +1,0 @@
-matA = tf.constant([[7, 8], [9, 10]])
-shapeOp = tf.shape(matA)
-print(shapeOp) #Tensor("Shape:0", shape=(2,), dtype=int32)
-with tf.Session() as sess:
-  print(sess.run(shapeOp)) #[2 2]
