@@ -1,35 +1,32 @@
 
 
 
+#include "zImageIO.h"
 
-
-#include "opencv2/imgproc.hpp"
-#include "opencv2/imgcodecs.hpp"
-#include "opencv2/highgui.hpp"
-
-using namespace cv;
-
-/**
-* @function main
-*/
 int main(int argc, char *argv[])
 {
 	//![variables]
 	Mat src, src_gray, dst;
-	int kernel_size = 3;
+	int kernel_size = 9;  //3
 	int scale = 1;
 	int delta = 0;
 	int ddepth = CV_16S;
 	//![variables]
 
 	//![load]
-	src = imread("test02.jpg", IMREAD_COLOR); // Load an image
+	zImageIO ImageIO;
+	string fileName;
+	fileName =  "F:/ProgramPractice/IPAndCV/ImagePreprocess/test02.jpg";
+	ImageIO.ReadImageData(fileName);
+	src = ImageIO.GetImageData();
 
-	if (src.empty())
-	{
-		return -1;
-	}
-	//![load]
+	//src = imread("F:\ProgramPractice\IPAndCV\ImagePreprocess/test02.jpg"); //, IMREAD_COLOR); // Load an image
+
+	//if (src.empty())
+	//{
+	//	return -1;
+	//}
+	/*![load]*/
 
 	//![reduce_noise]
 	/// Reduce noise by blurring with a Gaussian filter

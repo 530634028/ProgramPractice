@@ -1,5 +1,5 @@
 #
-# Configure file of AlexNet
+# Configure file of GoogleNet
 # a : zhonghy
 # date: 2018-9-30
 #
@@ -58,5 +58,5 @@ DATASET_MEAN = "output/imagenet_mean.json"
 
 # define the batch size and number of devices used for training
 BATCH_SIZE = 128
-NUM_DEVICES = 8
+NUM_DEVICES = 3
 

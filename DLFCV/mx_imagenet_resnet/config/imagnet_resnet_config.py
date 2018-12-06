@@ -1,5 +1,5 @@
 #
-# Configure file of AlexNet
+# Configure file of ResNet
 # a : zhonghy
 # date: 2018-9-30
 #
@@ -57,6 +57,6 @@ TEST_MX_REC = path.sep.join([MX_OUTPUT, "rec/test.rec"])
 DATASET_MEAN = "output/imagenet_mean.json"
 
 # define the batch size and number of devices used for training
-BATCH_SIZE = 128
+BATCH_SIZE = 32
 NUM_DEVICES = 8
 
