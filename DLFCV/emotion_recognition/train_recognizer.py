@@ -1,119 +1,117 @@
-#
-# Train alexnet on ImageNet dataset
-# a : zhonghy
-# date: 2018-10-29
-#
+"""
+ Training of emotion recognition
+ a : zhonghy
+ date: 2018-12-11
+
+"""
 
 # import the necessary packages
-from config import imagenet_alexnet_config as config
-from pyimagesearch.nn.mxconv.mxalexnet import MxAlexNet
-import mxnet as mx
+import matplotlib
+matplotlib.use("Agg")
+
+import sys
+sys.path.append("F:\ProgramPractice\DLFCV")
+from config import emotion_config as config
+from pyimagesearch.preprocessing.imagetoarraypreprocessor import ImageToArrayPreprocessor
+#from pyimagesearch.callbacks.epochcheckpoint import EpochCheckpoint
+from pyimagesearch.callbacks.trainingmonitor import TrainingMonitor
+from pyimagesearch.io.hdf5datasetgenerator import HDF5DatasetGenerator
+from pyimagesearch.nn.conv.emotionvggnet import EmotionVGGNet
+from keras.preprocessing.image import ImageDataGenerator
+from keras.optimizers import Adam
+from keras.models import load_model
+import keras.backend as K
+from keras.callbacks import ModelCheckpoint
 import argparse
-import logging
-import json
 import os
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-c", "--checkpoints", required=True,
                 help="path to output checkpoint directory")
-ap.add_argument("-p", "--prefix", required=True,
-                help="name of model prefix")
+ap.add_argument("-m", "--model", type=str,
+                help="path to *specific* model checkpoint to load")
 ap.add_argument("-s", "--start-epoch", type=int, default=0,
                 help="epoch to restart training at")
 args = vars(ap.parse_args())
 
-# set the logging level and output file
-logging.basicConfig(level=logging.DEBUG,
-                    filename="training_{}.log".format(args["start_epoch"]),
-                    filemode="w")
+# construct the training and testing image generators for data
+# augmentation, then initialize the iamge preprocessor
+trainAug = ImageDataGenerator(rotation_range=10, zoom_range=0.1,
+                              horizontal_flip=True, rescale=1 / 255.0,
+                              fill_mode="nearest")
+valAug = ImageDataGenerator(rescale=1 / 255.0)
+iap = ImageToArrayPreprocessor()
 
-# load the RGB means for the training set, then determin the batch
-# size
-means = json.loads(open(config.DATASET_MEAN).read())
-batchSize = config.BATCH_SIZE * config.NUM_DEVICES
-
-# construct the training image iterator
-trainIter = mx.io.ImageRecordIter(
-    path_imgrec=config.TRAIN_MX_REC,
-    data_shape=(3, 227, 227),
-    batch_size=batchSize,
-    rand_crop=True,
-    rand_mirror=True,
-    rotate=15,
-    max_shear_ratio=0.1
-    mean_r=means["R"],
-    mean_g=means["G"],
-    mean_b=means["B"],
-    preprocess_threads=config.NUM_DEVICES * 2
-)
-
-# construct the validation image iterator
-valIter = mx.io.ImageRecordIter(
-    path_imgrec=config.VAL_MX_REC,
-    data_shape=(3, 227, 227),
-    batch_size=batchSize,
-    mean_r=means["R"],
-    mean_g=means["G"],
-    mean_b=means["B"],
-)
-
-# initialize the optimmizer
-opt = mx.optimizer.SGD(learning_rate=1e-2, momentum=0.9, wd=0.0005,
-                       rescale_grad=1.0 / batchSize)
-
-# construct the checkpoints path, initialize the model argument and
-# auxiliary parameters
-checkpointsPath = os.path.sep.join([args["checkpoints"],
-                                    args["prefix"]])
-argParams = None
-auxParams = None
+# initialize the training and validation dataset generators
+trainGen = HDF5DatasetGenerator(config.TRAIN_HDF5, config.BATCH_SIZE,
+                                aug=trainAug, preprocessors=[iap],
+                                classes=config.NUM_CLASSES)
+valGen = HDF5DatasetGenerator(config.VAL_HDF5, config.BATCH_SIZE,
+                              aug=valAug, preprocessors=[iap],
+                              classes=config.NUM_CLASSES)
 
 # if there is no specific model starting epoch supplied, then
-# initialize the network
-if args["start_epoch"] <= 0:
-    # build the AlexNet architecture
-    print("[INFO] building network...")
-    model = MxAlexNet.build(config.NUM_CLASSES)
+# initialize the network and compile the model
+if args["model"] is None:
+    # build the VGG architecture
+    print("[INFO] compiling network...")
+    model = EmotionVGGNet.build(width=48, height=48, depth=1,
+                                classes=config.NUM_CLASSES)
+    opt = Adam(lr=1e-3)
+    model.compile(loss="categorical_crossentropy", optimizer=opt,
+                  metrics=["accuracy"])
 # otherwise, a specific checkpoint was supplied
 else:
-    # load the checkpoint from disk
-    print("[INFO] loading epoch {}...".format(args["start_epoch"]))
-    model = mx.model.FeedForward.load(checkpointsPath,
-                                      args["start_epoch"])
+    print("[INFO] loading {}...".format(args["model"]))
+    fPath = os.path.sep.join([config.OUTPUT_PATH, args["model"]])
+    model = load_model(fPath)  #(args["model"])
 
-    # update the model and parameters
-    argParams = model.arg_params
-    auxParams = model.aux_params
-    model = model.symbol
+    # upate the learning rate
+    print("[INFO] old learning rate: {}".format(
+        K.get_value(model.optimizer.lr)
+    ))
+    K.set_value(model.optimizer.lr, 1e-5)
+    print("[INFO] new learning rate: {}".format(
+        K.get_value(model.optimizer.lr)
+    ))
 
-# compile the model
-model = mx.model.FeedForward(
-    ctx=[mx.gpu(1), mx.gpu(2), mx.gpu(3)], # by your need
-    symbol=model,
-    initializer=mx.initializer.Xavier,
-    arg_params=argParams,
-    aux_params=auxParams,
-    optimizer=opt,
-    num_epoch=90,
-    begin_epoch=args["start_epoch"]
-)
+# construct the set of callbacks
+figPath = os.path.sep.join([config.OUTPUT_PATH,
+                            "vggnet_emotion.png"])
+jsonPath = os.path.sep.join([config.OUTPUT_PATH,
+                            "vggnet_emotion.json"])
 
-# intialize the callbacks and evaluation metrics
-batchEndCBs = [mx.callback.Speedometer(batchSize, 500)]
-epochEndCBs = [mx.callback.do_checkpoint(checkpointsPath)]
-metrics = [mx.metric.Accuracy(), mx.metric.TopKAccuracy(top_k=5),
-           mx.metric.CrossEntropy()]
+#checkpointer = ModelCheckpoint(filepath='/tmp/weights.hdf5', verbose=1, save_best_only=True)
+fname = os.path.sep.join([config.OUTPUT_PATH, args["checkpoints"],
+                          "weights-{epoch:03d}.hdf5"])
+#ModelCheckpoint(fname, monitor="val_acc", mode="max")
+
+callbacks = [
+    ModelCheckpoint(fname, verbose=1,
+                    save_best_only=True),
+    TrainingMonitor(figPath, jsonPath=jsonPath,
+                    startAt=args["start_epoch"])
+]
 
 # train the network
-print("[INFO] training network...")
-model.fit(
-    X=trainIter,
-    eval_data=valIter,
-    eval_metric=metrics,
-    batch_end_callback=batchEndCBs,
-    epoch_end_callback=epochEndCBs
+model.fit_generator(
+    trainGen.generator(),
+    steps_per_epoch=trainGen.numImages // config.BATCH_SIZE,
+    validation_data=valGen.generator(),
+    validation_steps=valGen.numImages // config.BATCH_SIZE,
+    epochs=10,  # first 100
+    max_queue_size=config.BATCH_SIZE * 2,
+    callbacks=callbacks,
+    verbose=1
 )
 
-# python train_alexnet.py --checkpoints checkpoints --prefix alexnet
+# close the database
+trainGen.close()
+valGen.close()
+
+# $ python train_recognizer.py --checkpoints checkpoints
+
+
+
 

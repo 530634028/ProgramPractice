@@ -14,7 +14,7 @@ import numpy as np
 import json
 import os
 
-class EpochCheckpoint(BaseLogger):
+class EpochCheckpoint(keras.callbacks.Callback):
     def __init__(self, startPath, every=1, startAt=0):
         super(EpochCheckpoint, self).__init__()
         self.startPath = startPath
@@ -25,9 +25,10 @@ class EpochCheckpoint(BaseLogger):
         # construct the callback to save only the *best* model to disk
         # based on the validation loss
 
-        if epoch % 1 == 0:
-            fname = os.path.sep.join([self.startPath,
+        #if epoch % 1 == 0:
+        fname = os.path.sep.join([self.startPath,
                                       "weights-{epoch:03d}.hdf5"])
-            checkpoint = ModelCheckpoint(fname, monitor="val_acc", mode="max")
+        ModelCheckpoint(fname, monitor="val_acc", mode="max")
+            #checkpoint =
             #return checkpoint
             #callbacks = [checkpoint]
