@@ -20,8 +20,8 @@ void Seed_Filling(const cv::Mat& binImg, cv::Mat& lableImg)   //种子填充法
 	// 4邻接方法
  
  
-	if (binImg.empty() ||
-		binImg.type() != CV_8UC1)
+	if (binImg.empty()) //||
+		//binImg.type() != CV_8UC1)
 	{
 		return;
 	}
@@ -60,7 +60,7 @@ void Seed_Filling(const cv::Mat& binImg, cv::Mat& lableImg)   //种子填充法
 					{// 右边
 						neighborPixels.push(std::pair<int,int>(curX, curY+1));
 					}
-					if (lableImg.at<int>(curX-1, curY) == 1)
+					if (lableImg.at<int>(curX-1, curY) == 1)    // cross the border   zhonghy
 					{// 上边
 						neighborPixels.push(std::pair<int,int>(curX-1, curY));
 					}
@@ -163,7 +163,7 @@ void Two_Pass(const cv::Mat& binImg, cv::Mat& lableImg)    //两遍扫描法
  
 	// 更新等价对列表
 	// 将最小标号给重复区域
-	for (size_t i = 2; i < labelSet.size(); i++)
+	for (size_t i = 2; i < labelSet.size(); i++)  //find label connected to current point which is smallest zhonghy
 	{
 		int curLabel = labelSet[i];
 		int preLabel = labelSet[curLabel];
@@ -173,14 +173,15 @@ void Two_Pass(const cv::Mat& binImg, cv::Mat& lableImg)    //两遍扫描法
 			preLabel = labelSet[preLabel];
 		}
 		labelSet[i] = curLabel;
-	}  ;
+	};
  
-	for (int i = 0; i < rows; i++)
+	for (int i = 0; i < rows; i++)  // for what ??? zhonghy
 	{
-		int* data = lableImg.ptr<int>(i);
-		for (int j = 0; j < cols; j++)
+		int* data = lableImg.ptr<int>(i);  // labelImg save the smallest label of it's neighbor, but maybe not the smallest in image
+		for (int j = 0; j < cols; j++)     // so we need to update label with smallest label in image
 		{
-			int& pixelLabel = data[j];
+			int& pixelLabel = data[j];     // this is reference zhonghy, maybe 1, is the origin value of binImg
+			//std::cout << data[j] << std::endl;
 			pixelLabel = labelSet[pixelLabel];	
 		}
 	}
@@ -218,7 +219,7 @@ void LabelColor(const cv::Mat& labelImg, cv::Mat& colorLabelImg)
 		for (int j = 0; j < cols; j++)
 		{
 			int pixelValue = data_src[j];
-			if (pixelValue > 1)
+			if (pixelValue > 1)  //exclude 1   zhonghy
 			{
 				if (colors.count(pixelValue) <= 0)
 				{
@@ -260,7 +261,7 @@ int main(int argc, char *argv[])
 	cv::imshow("threshold image", grayImage);
 
 	Two_Pass(grayImage, labelImg); //, num);
-	//Seed_Filling(binImage, labelImg);
+	//Seed_Filling(grayImage, labelImg);
 	//彩色显示
 	cv::Mat colorLabelImg;
 	LabelColor(labelImg, colorLabelImg);
