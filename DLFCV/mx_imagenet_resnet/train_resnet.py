@@ -41,7 +41,7 @@ trainIter = mx.io.ImageRecordIter(
     rand_crop=True,
     rand_mirror=True,
     rotate=15,
-    max_shear_ratio=0.1
+    max_shear_ratio=0.1,
     mean_r=means["R"],
     mean_g=means["G"],
     mean_b=means["B"],
@@ -55,7 +55,7 @@ valIter = mx.io.ImageRecordIter(
     batch_size=batchSize,
     mean_r=means["R"],
     mean_g=means["G"],
-    mean_b=means["B"],
+    mean_b=means["B"]
 )
 
 # initialize the optimmizer
