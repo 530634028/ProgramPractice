@@ -1,7 +1,7 @@
 """
  config file for age and gender classification
  a : zhonghy
- date: 2018-1-11
+ date: 2019-1-11
 
 """
 
