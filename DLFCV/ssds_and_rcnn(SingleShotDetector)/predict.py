@@ -1,8 +1,8 @@
 """
- predict for ssds and rcnn
+ predict for ssds and rcnn(single shot detection)
  -- traffic signs detector
  a : zhonghy
- date: 2019-1-23
+ date: 2019-1-24
 
 """
 
@@ -130,19 +130,6 @@ with model.as_default():
         # show the output image
         cv2.imshow("Output", output)
         cv2.waitKey(0)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

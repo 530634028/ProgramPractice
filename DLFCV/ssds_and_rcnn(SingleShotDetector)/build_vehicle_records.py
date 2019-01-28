@@ -1,8 +1,8 @@
 """
- build lisa dataset for ssds and rcnn
+ build vehicle dataset for ssds and rcnn(single shot)
  -- traffic signs detector
  a : zhonghy
- date: 2019-1-23
+ date: 2019-1-24
 
 """
 
@@ -10,9 +10,9 @@
 import sys
 sys.path.append("F:\ProgramPractice\DLFCV")
 
-from config import lisa_config as config
+from config import dlib_front_rear_config as config
 from pyimagesearch.utils.tfannotation import TFAnnotation
-from sklearn.model_selection import train_test_split
+from bs4 import BeautifulSoup
 from PIL import Image
 import tensorflow as tf
 import os
@@ -33,64 +33,39 @@ def main(_):
     # close the output classes file
     f.close()
 
-    # initialize a data dictionary, then load the annotations file
-    D = {}
-    rows = open(config.ANNOT_PATH).read().strip().split("\n")
-
-    # loop over the individual rows, skipping the header
-    for row in rows[1:]:
-        # break the row into components
-        row = row.split(",")[0].split(";")
-        (imagePath, label, startX, startY, endX, endY, _) = rpw
-        (startX, startY) = (float(startX), float(startY))
-        (endX, endY) = (float(endX), float(endY))
-
-        # if we are not interested in the label, ignore it
-        if label not in config.CLASSES:
-            continue
-
-        # build the path to then input image, then grab any other
-        # bounding boxes + labels associated with the image
-        # path, labels, and bounding box lists, respectively
-        p = os.path.sep.join([config.BASE_PATH, imagePath])
-        b = D.get(p, [])
-
-        # build a tuple consisting of the label and bounding box
-        # then update teh list and store it in dictionary
-        b.append((label, (startX, startY, endX, endY)))
-        D[p] = b
-
-    # create training and testing splits from our data dictionary
-    (trainKeys, testKeys) = train_test_split(list(D.keys()),
-                                             test_size=config.TEST_SIZE,
-                                             random_state=42)
     # initialize the data split files
     datasets = [
-        ("train", trainKeys, config.TRAIN_RECORD),
-        ("test", testKeys, config.TEST_RECORD)
+        ("train", config.TRAIN_XML, config.TRAIN_RECORD),
+        ("test", config.TEST_XML, config.TEST_RECORD)
     ]
 
     # loop over the datasets
-    for (dType, keys, outputPath) in datasets:
+    for (dType, inputPath, outputPath) in datasets:
         # initialize the TensorFlow writer and initialize the total
         # number of examples written to file
         print("[INFO] processing '{}'...".format(dType))
+        contents = open(inputPath).read()
+        soup = BeautifulSoup(contents, "html.parser")
+
+        #initialize the TensorFlow writer and initialize the
+        # number of examples written to file
         writer = tf.python_io.TFRecordWriter(outputPath)
         total = 0
 
         # loop over all the keys in then current set
-        for k in keys:
+        for image in soup.find_all("image"):
             # load the input image from disk as a TensorFlow object
-            encoded = tf.gfile.GFile(k, "rb").read()
+            p = os.path.sep.join([config.BASE_PATH, image["file"]])
+            encoded = tf.gfile.GFile(p, "rb").read()
             encoded = bytes(encoded)
 
             # load the image from disk again, this time as a PIL
             # object
-            pilImage = Image.open(k)
+            pilImage = Image.open(p)
             (w, h) = pilImage.size[:2]
 
             # parse the filename and encoding from the input path
-            filename = k.split(os.path.sep)[-1]
+            filename = image["file"].split(os.path.sep)[-1]
             encoding = filename[filename.rfind(".") + 1:]
 
             # initialize the annotation object used to store
@@ -104,13 +79,38 @@ def main(_):
 
             # loop over the bounding boxes + labels associated with
             # the image
-            for (label, (startX, startY, endX, endY)) in D[k]:
+            for box in image.find_all("box"):
+                # check to see if the bounding box should be ignored
+                if box.has_attr("ignore"):
+                    continue
+
+                # extract the bounding box information + label,
+                # ensuring that all bounding box dimensions fit
+                # inside the image
+                startX = max(0, float(box["left"]))
+                startY = max(0, float(box["top"]))
+                endX = min(w, float(box["width"]) + startX)
+                endY = max(h, float(box["height"]) + startY)
+                label = box.find("label").text
+
                 # TensorFlow assumes all bounding boxes are in the
                 # range [0, 1] so we need to scale them
                 xMin = startX / w
                 xMax = endX / w
                 yMin = startY / h
                 yMax = endY / h
+
+                # due to errors in Annotation, it may be possible
+                # that the minimum values are larger than the maximum
+                # values -- in this case, treat it as an error during
+                # annotation and ignore the bounding box
+                if xMin > xMax and yMin > yMax:
+                    continue
+
+                # otherwise, check to see if we should resize along the
+                # height
+                elif xMax < xMin and yMax < yMin:
+                    continue
 
                 """
                 # double-check for the dataset, read image from
