@@ -41,7 +41,7 @@ def main(_):
     for row in rows[1:]:
         # break the row into components
         row = row.split(",")[0].split(";")
-        (imagePath, label, startX, startY, endX, endY, _) = rpw
+        (imagePath, label, startX, startY, endX, endY, _) = row
         (startX, startY) = (float(startX), float(startY))
         (endX, endY) = (float(endX), float(endY))
 
@@ -145,7 +145,7 @@ def main(_):
 
             # encode the data point attributes using the TensorFlow
             # helper functions
-            features = tf.train.Feature(feature=tfAnnot.build())
+            features = tf.train.Features(feature=tfAnnot.build())
             example = tf.train.Example(features=features)
 
             # add the example to the writer

@@ -8,7 +8,7 @@
 import os
 
 # inialize the base path for the LISA dataset
-BASE_PATH = "lisa"
+BASE_PATH = "F:\data\lisa"
 
 # build the path to the annotations file
 ANNOT_PATH = os.path.sep.join([BASE_PATH, "allAnnotations.csv"])
@@ -16,8 +16,8 @@ ANNOT_PATH = os.path.sep.join([BASE_PATH, "allAnnotations.csv"])
 # define the path to the output training, validation, and testing
 # image records
 TRAIN_RECORD = os.path.sep.join([BASE_PATH, "records/training.record"])
-TEST_RECORD = path.sep.join([BASE_PATH, "records/testing.record"])
-CLASSES_FILE = path.sep.join([BASE_PATH, "records/classes.record"])
+TEST_RECORD = os.path.sep.join([BASE_PATH, "records/testing.record"])
+CLASSES_FILE = os.path.sep.join([BASE_PATH, "records/classes.pbtxt"])
 
 # initialize the test split size
 TEST_SIZE = 0.25

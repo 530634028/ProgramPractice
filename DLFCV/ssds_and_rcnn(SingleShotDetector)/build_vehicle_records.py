@@ -145,7 +145,7 @@ def main(_):
 
             # encode the data point attributes using the TensorFlow
             # helper functions
-            features = tf.train.Feature(feature=tfAnnot.build())
+            features = tf.train.Features(feature=tfAnnot.build())
             example = tf.train.Example(features=features)
 
             # add the example to the writer
