@@ -30,7 +30,7 @@ class AgeGenderHelper:
 
     def toLabel(self, age, gender):
         # check to see if we should determin the age label
-        if self.config.DATASET_TYPE == "age"
+        if self.config.DATASET_TYPE == "age":
             return self.toAgeLabel(age)
 
         # otherwise, assume we are determining the gender label
@@ -114,6 +114,11 @@ class AgeGenderHelper:
             for row in rows:
                 # upack the needed components of the row
                 row = row.split("\t")
+
+                #print(row[:5])
+                if len(row[:5]) != 5:
+                    continue
+
                 (userID, imagePath, faceID, age, gender) = row[:5]
 
                 # if the age or gender is invalid, ignore the sample
@@ -139,26 +144,5 @@ class AgeGenderHelper:
 
         # return a tuple of image paths and labels
         return (paths, labels)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

@@ -10,11 +10,11 @@ from os import path
 
 # define the type of dataset we are training (i.e., either "age" or
 # "gender")
-DATASET_TYPE = "gender"
+DATASET_TYPE = "age"  # "gender" for gender dataset, "age" for age dataset
 
 # define the base paths to the faces dataset and output path
 BASE_PATH = "../../../data/adience"
-OUTPU_BASE = "output"
+OUTPU_BASE = "../../../data/adience/output"
 MX_OUTPUT = BASE_PATH
 
 # based on the base path, derive the images path and folds path
@@ -27,8 +27,9 @@ NUM_VAL_IMAGES = 0.15
 NUM_TEST_IMAGES = 0.15
 
 # define the batch size and number of devices used for training
-BATCH_SIZE = 128
-NUM_DEVICES = 2  # attention should changed by your own need
+BATCH_SIZE = 32   # original value is 128, but we need to set it smaller
+NUM_DEVICES = 1   # original value is 2, but it is based on the number of devices in your system
+                  # attention should changed by your own need
 
 # check to see if we are working with the "age" portion of the
 # dataset

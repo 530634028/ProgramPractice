@@ -13,12 +13,15 @@ from config import age_gender_config as config
 from pyimagesearch.nn.mxconv.mxagegender import MxAgeGenderNet
 from pyimagesearch.utils.agegemderhelper import AgeGenderHelper #???
 from pyimagesearch.mxcallbacks.mxmetrics import one_off_callback
+from pyimagesearch.callbacks.trainingmonitor import TrainingMonitor
 import mxnet as mx
 import argparse
 import logging
 import pickle
 import json
 import os
+
+from os import path
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -65,13 +68,18 @@ valIter = mx.io.ImageRecordIter(
 )
 
 # initialize the optimmizer
-opt = mx.optimizer.SGD(learning_rate=1e-3, momentum=0.9, wd=0.0005,
-                       rescale_grad=1.0 / batchSize)
+opt = mx.optimizer.Adam(learning_rate=1e-5) #, momentum=0.9, wd=0.0005,  # fine tuning value le-3 le-5 le-6 SGD
+                       # rescale_grad=1.0 / batchSize)
+
+# SGD(learning_rate=1e-4, momentum=0.9, wd=0.0005,     # fine tuning value le-3 le-5 le-6 SGD
+#                        rescale_grad=1.0 / batchSize)
 
 # construct the checkpoints path, initialize the model argument and
 # auxiliary parameters
 checkpointsPath = os.path.sep.join([args["checkpoints"],
                                     args["prefix"]])
+#print(checkpointsPath)
+
 argParams = None
 auxParams = None
 
@@ -88,23 +96,24 @@ else:
     (model, argParams, auxParams) = mx.model.load_checkpoint(
         checkpointsPath, args["start_epoch"]
     )
+    #print(len(model))
 
 # compile the model
 model = mx.model.FeedForward(
-    ctx=[mx.gpu(2), mx.gpu(3)], # by your need
+    ctx=[mx.gpu(0)], # mx.gpu(3)], # by your need
     symbol=model,
     initializer=mx.initializer.Xavier(),
     arg_params=argParams,
     aux_params=auxParams,
     optimizer=opt,
-    num_epoch=110,
+    num_epoch=80,   # change as you need, original value is 110
     begin_epoch=args["start_epoch"]
 )
 
 # intialize the callbacks and evaluation metrics
 batchEndCBs = [mx.callback.Speedometer(batchSize, 10)]
 epochEndCBs = [mx.callback.do_checkpoint(checkpointsPath)]
-metrics = [mx.metric.Accuracy(), mx.metric.CrossEntropy()]
+metrics = [mx.metric.Accuracy(), mx.metric.CrossEntropy()] #, mx.metric.Loss()]
 
 # check to see if the one-off accuracy callback should be used
 if config.DATASET_MEAN == "age":
@@ -116,6 +125,10 @@ if config.DATASET_MEAN == "age":
     epochEndCBs.append(one_off_callback(trainIter, valIter,
                                         oneOff, mx.gpu(0)))
 
+figureOfTraining = path.sep.join([config.OUTPU_BASE, "age_training.png"])
+trainingMonitor = TrainingMonitor(figureOfTraining)
+                                   # startAt=args["start_epoch"])
+
 # train the network
 print("[INFO] training network...")
 model.fit(
@@ -123,7 +136,7 @@ model.fit(
     eval_data=valIter,
     eval_metric=metrics,
     batch_end_callback=batchEndCBs,
-    epoch_end_callback=epochEndCBs
+    epoch_end_callback=epochEndCBs #, trainingMonitor] # TypeError: 'list' object is not callable
 )
 
 # python train.py --checkpoints checkpoints/age --prefix agenet

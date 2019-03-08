@@ -1,5 +1,5 @@
 """
- model build for age and gender classification
+ model build for age and gender classification, similar to the AlexNet
  a : zhonghy
  date: 2019-1-15
 
