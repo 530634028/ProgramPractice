@@ -19,7 +19,9 @@ model = mx.model.FeedForward(
      (le-5):python train.py --checkpoints F:\data\adience\checkpoints\age  --prefix agenet --start-epoch 110 (要看你checkpoints的名字)
 
 6、Q:为什么从120开始训练的时候没有结果？？？
-     Solutions：因为121开始的结果没有120好 所以就没有做操作
+     Solutions：因为num_epoch = 40 而start_epoch设置的为120；意思要理解为从start_epoch开始训练到num_epoch，所以设置参数错误
+7、python plot_log.py --network AgeNet --dataset AgeData
+
      
      
 

@@ -68,7 +68,7 @@ valIter = mx.io.ImageRecordIter(
 )
 
 # initialize the optimmizer
-opt = mx.optimizer.Adam(learning_rate=1e-5) #, momentum=0.9, wd=0.0005,  # fine tuning value le-3 le-5 le-6 SGD
+opt = mx.optimizer.Adam(learning_rate=1e-6) #, momentum=0.9, wd=0.0005,  # fine tuning value le-3 le-5 le-6 SGD
                        # rescale_grad=1.0 / batchSize)
 
 # SGD(learning_rate=1e-4, momentum=0.9, wd=0.0005,     # fine tuning value le-3 le-5 le-6 SGD
@@ -106,7 +106,7 @@ model = mx.model.FeedForward(
     arg_params=argParams,
     aux_params=auxParams,
     optimizer=opt,
-    num_epoch=80,   # change as you need, original value is 110
+    num_epoch=120,   # change as you need, original value is 110
     begin_epoch=args["start_epoch"]
 )
 
