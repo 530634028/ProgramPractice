@@ -7,7 +7,8 @@
 
 # import the necessary packages
 import sys
-sys.path.append("F:\ProgramPractice\DLFCV")
+#sys.path.append("F:\ProgramPractice\DLFCV")
+sys.path.append("E:\ZWDX_Learn\ProgramPractice\DLFCV")
 
 from config import age_gender_config as config
 from pyimagesearch.nn.mxconv.mxagegender import MxAgeGenderNet
@@ -78,7 +79,7 @@ opt = mx.optimizer.Adam(learning_rate=1e-6) #, momentum=0.9, wd=0.0005,  # fine 
 # auxiliary parameters
 checkpointsPath = os.path.sep.join([args["checkpoints"],
                                     args["prefix"]])
-#print(checkpointsPath)
+# print(checkpointsPath)
 
 argParams = None
 auxParams = None
@@ -96,7 +97,7 @@ else:
     (model, argParams, auxParams) = mx.model.load_checkpoint(
         checkpointsPath, args["start_epoch"]
     )
-    #print(len(model))
+    # print(len(model))
 
 # compile the model
 model = mx.model.FeedForward(

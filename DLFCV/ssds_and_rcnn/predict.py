@@ -8,7 +8,9 @@
 
 # import the necessary packages
 import sys
-sys.path.append("F:\ProgramPractice\DLFCV")
+# sys.path.append("F:\ProgramPractice\DLFCV")
+sys.path.append("E:\ZWDX_Learn\ProgramPractice\DLFCV")
+
 
 from object_detection.utils import label_map_util
 import tensorflow as tf

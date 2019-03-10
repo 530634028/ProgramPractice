@@ -13,8 +13,13 @@ from os import path
 DATASET_TYPE = "age"  # "gender" for gender dataset, "age" for age dataset
 
 # define the base paths to the faces dataset and output path
-BASE_PATH = "../../../data/adience"
-OUTPU_BASE = "../../../data/adience/output"
+# the path of company computer
+# BASE_PATH = "../../../data/adience"
+# OUTPU_BASE = "../../../data/adience/output"
+# the path of home computer
+BASE_PATH = "../../../../data/adience"
+OUTPU_BASE = "../../../../data/adience/output"
+
 MX_OUTPUT = BASE_PATH
 
 # based on the base path, derive the images path and folds path

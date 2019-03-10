@@ -8,7 +8,8 @@
 
 # import the necessary packages
 import sys
-sys.path.append("F:\ProgramPractice\DLFCV")
+# sys.path.append("F:\ProgramPractice\DLFCV")
+sys.path.append("E:\ZWDX_Learn\ProgramPractice\DLFCV")
 
 from config import lisa_config as config
 from pyimagesearch.utils.tfannotation import TFAnnotation

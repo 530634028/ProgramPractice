@@ -1,0 +1,2 @@
+1、pip install --user "git+https://github.com/philferriere/cocoapi.git#egg=pycocotools&subdirectory=PythonAPI"
+     提示：--user，为了防止权限限制

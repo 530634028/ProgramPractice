@@ -14,16 +14,16 @@ import re
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-n", "--network", required=True,
-	help="name of network")
+                help="name of network")
 ap.add_argument("-d", "--dataset", required=True,
-	help="name of dataset")
+                help="name of dataset")
 args = vars(ap.parse_args())
 
 # define the paths to the training logs
 logs = [
-	(30, "training_0.log"),			# lr=1e-4
-	(80, "training_30.log"),		# lr=1e-5
-	(120, "training_80.log"),		# lr=1e-6
+    (30, "training_0.log"),			# lr=1e-4
+    (80, "training_30.log"),		# lr=1e-5
+    (120, "training_80.log"),		# lr=1e-6
 ]
 
 # initialize the list of train rank-1 and rank-5 accuracies, along
@@ -99,15 +99,15 @@ for (i, (endEpoch, p)) in enumerate(logs):
 plt.style.use("ggplot")
 plt.figure()
 plt.plot(np.arange(0, len(trainRank1)), trainRank1,
-	label="train_rank1")
+         label="train_rank1")
 plt.plot(np.arange(0, len(trainRank5)), trainRank5,
-	label="train_rank5")
+         label="train_rank5")
 plt.plot(np.arange(0, len(valRank1)), valRank1,
-	label="val_rank1")
+         label="val_rank1")
 plt.plot(np.arange(0, len(valRank5)), valRank5,
-	label="val_rank5")
+         label="val_rank5")
 plt.title("{}: rank-1 and rank-5 accuracy on {}".format(
-	args["network"], args["dataset"]))
+    args["network"], args["dataset"]))
 plt.xlabel("Epoch #")
 plt.ylabel("Accuracy")
 plt.legend(loc="lower right")
@@ -117,11 +117,11 @@ plt.legend(loc="lower right")
 plt.style.use("ggplot")
 plt.figure()
 plt.plot(np.arange(0, len(trainLoss)), trainLoss,
-	label="train_loss")
+         label="train_loss")
 plt.plot(np.arange(0, len(valLoss)), valLoss,
-	label="val_loss")
+         label="val_loss")
 plt.title("{}: cross-entropy loss on {}".format(args["network"],
-	args["dataset"]))
+                                                args["dataset"]))
 plt.xlabel("Epoch #")
 plt.ylabel("Loss")
 plt.legend(loc="upper right")
