@@ -4,12 +4,14 @@
  date: 2019-1-16
 
 """
+
+import sys
+# sys.path.append("F:\ProgramPractice\DLFCV")
+sys.path.append("E:\ZWDX_Learn\ProgramPractice\DLFCV")
+
 # since 'AgeGenderHelper' also imports OpenCV, we need to place it
 # above the mxnet import to avoid a segmentation fault
 from pyimagesearch.utils.agegemderhelper import AgeGenderHelper
-
-import sys
-sys.path.append("F:\ProgramPractice\DLFCV")
 
 # import hte necessary packages
 from config import age_gender_config as config
@@ -69,7 +71,7 @@ acc = model.score(testIter, eval_metric=metrics)
 print("[INFO] rank-1: {:.2f}%".format(acc[0] * 100))
 
 # check to see if the one-off accuracy callback should be used
-if config.DATASET_MEAN == "age":
+if config.DATASET_TYPE == "age":
     # re-compile the model so that we can compute our custom one-off
     # evaluation metric
     arg = model.arg_params

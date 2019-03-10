@@ -62,7 +62,7 @@ class AgeGenderHelper:
         # sort the class labels in ascending order (according to age
         # and initialize the one-off mappings for computing accuracy
         classes = sorted(le.classes_, key=lambda x:
-                         int(x.decode("utf-8").split("_")[0]))
+                         int(x.split("_")[0]))  # need to remove the code: decode("utf-8")
         oneOff = {}
 
         # loop over the index and name of the (sorted) class labels

@@ -7,8 +7,7 @@
 
 
 2、company：python F:\ExternalLib\models\research\object_detection\train.py --logtostderr --pipeline_config_path=F:\data\lisa\experiments\training\faster_rcnn_lisa.config --train_dir=F:\data\lisa\experiments\training
-     home：python E:\ExternalLib\models\research\object_detection\train.py --logtostderr --pipeline_config_path=config\faster_rcnn_lisa.config --train_dir=E:\data\lis
-a\experiments\training
+     home：python E:\ExternalLib\models\research\object_detection\train.py --logtostderr --pipeline_config_path=config\faster_rcnn_lisa.config --train_dir=E:\data\lisa\experiments\training
 
 3、error：ValueError: Argument must be a dense tensor: range(0, 3) - got shape [3], but wanted [].
 
@@ -57,8 +56,7 @@ a\experiments\training
      s：找到tensorboard.exe文件路径，将其添加到system--path环境变量中，例如：    C:\Users\mk\AppData\Roaming\Python\Python36\Scripts
      为什么在c/programfile中有python36，而在C:\Users\mk\AppData\Roaming\Python\Python36也有36，是安装的时候的问题吗？？？？？？？后者用于存放第三方库？？？
 
-13、a、训练完之后：python E:\ExternalLib\models\research\object_detection\export_inference_graph.py --input_type image_tensor --pipeline_config_path config\faster_
-rcnn_lisa.config --trained_checkpoint_prefix E:\data\lisa\experiments\training\model.ckpt-50000 --output_directory E:\data\lisa\experiments\exported_model    输出mdel
+13、a、训练完之后：python E:\ExternalLib\models\research\object_detection\export_inference_graph.py --input_type image_tensor --pipeline_config_path config\faster_rcnn_lisa.config --trained_checkpoint_prefix E:\data\lisa\experiments\training\model.ckpt-50000 --output_directory E:\data\lisa\experiments\exported_model    输出mdel
        b、再使用：python predict.py --model E:\data\lisa\experiments\exported_model\frozen_inference_graph.pb --labels E:\data\lisa\records\classes.pbtxt --image
 E:\data\image4.png --num-classes 3
          对数据集外面的图像数据进行预测

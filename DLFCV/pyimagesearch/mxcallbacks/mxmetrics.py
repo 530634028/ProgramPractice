@@ -56,6 +56,8 @@ def _compute_one_off(model, dataIter, oneOff):
             total += 1
 
         # finish computing the one-off metric
+        # print(correct)
+        # print(total)
         return correct / float(total)
 
 

@@ -10,10 +10,10 @@
 4、 Q： Check failed: exec_ctx.dev_id < device_count_ (2 vs. 1)
  Invalid GPU Id: 2, Valid device id should be less than device_count: 1
       Solutions：
-# compile the model
-model = mx.model.FeedForward(
-    ctx=[mx.gpu(0)], # mx.gpu(3)], # by your need
-根据自身系统的GPU数进行修改，目前修改为mx.gpu(0)，---注意---
+          # compile the model
+          model = mx.model.FeedForward(
+               ctx=[mx.gpu(0)], # mx.gpu(3)], # by your need
+          根据自身系统的GPU数进行修改，目前修改为mx.gpu(0)，---注意---
 
 5、执行的命令(lr=le-3)：python train.py --checkpoints F:\data\adience\checkpoints\age --prefix agenet
      (le-5):python train.py --checkpoints F:\data\adience\checkpoints\age  --prefix agenet --start-epoch 110 (要看你checkpoints的名字)
