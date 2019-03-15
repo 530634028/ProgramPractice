@@ -36,10 +36,12 @@ args = vars(ap.parse_args())
 # load the label encoder, followed by the testing dataset file
 # then sample the testing set
 print("[INFO] loading label encoders and mean files...")
-ageLE = pickle.loads(open(deploy.AGE_LABEL_ENCODER_PATH, "rb").read())
-genderLE = pickle.loads(open(deploy.GENDER_LABEL_ENCODER_PATH, "rb").read())
+ageLE = pickle.loads(open(deploy.AGE_LABEL_ENCODER, "rb").read())
+genderLE = pickle.loads(open(deploy.GENDER_LABEL_ENCODER, "rb").read())
 ageMeans = json.loads(open(deploy.AGE_MEANS).read())
 genderMeans = json.loads(open(deploy.GENDER_MEANS).read())
+
+# print(ageLE)
 
 # load the models from disk
 print("[INFO] loading pre-trained model...")
@@ -73,11 +75,14 @@ genderModel = mx.model.FeedForward(
 sp = SimplePreprocessor(width=227, height=227, inter=cv2.INTER_CUBIC)
 ageMp = MeanPreprocessor(ageMeans["R"], ageMeans["G"], ageMeans["B"])
 genderMp = MeanPreprocessor(genderMeans["R"], genderMeans["G"], genderMeans["B"])
-iap = ImageToArrayPreprocessor()
+# iap = ImageToArrayPreprocessor()
+iap = ImageToArrayPreprocessor(dataFormat="channels_first")  # remenber 2019-3-12
 
 # then sample the testing set
 rows = open(config.TEST_MX_LIST).read().strip().split("\n")
 rows = np.random.choice(rows, size=args["sample_size"])
+
+# print(rows)
 
 # loop over the testing images
 for row in rows:
@@ -85,27 +90,43 @@ for row in rows:
     (_, gtLabel, imagePath) = row.strip().split("\t")
     image = cv2.imread(imagePath)
 
+    # print(gtLabel)
+
     # pre-process images
     ageImage = iap.preprocess(ageMp.preprocess(sp.preprocess(image)))
     genderImage = iap.preprocess(genderMp.preprocess(sp.preprocess(image)))
     ageImage = np.expand_dims(ageImage, axis=0)
     genderImage = np.expand_dims(genderImage, axis=0)
 
+    # print(ageImage.shape[3])
+    # ageImage.reshape(1, ageImage.shape[3], ageImage.shape[2], ageImage.shape[1])
+    # genderImage.reshape(1, genderImage.shape[3], genderImage.shape[2], genderImage.shape[1])
+
+
     # classify the image and grab the indexes of the top-5 predictions
-    agePreds = ageModel.predict(ageImage)[0]
+    agePreds = ageModel.predict(ageImage)[0]   # ???
     genderPreds = genderModel.predict(genderImage)[0]
     # sort teh predictions according to their probability
     ageIdxs = np.argsort(agePreds)[::-1]
     genderIdxs = np.argsort(genderPreds)[::-1]
 
     # visualize the age and gender predictions
-    ageCanvas = AgeGenderHelper.visualizeAge(agePreds, ageLE) # we didn't have this functions
-    genderCanvas = AgeGenderHelper.visualizeAge(genderPreds, genderLE)
+    # ageCanvas = AgeGenderHelper.visualizeAge(agePreds, ageLE) # we didn't have this functions
+    # genderCanvas = AgeGenderHelper.visualizeGender(genderPreds, genderLE)
+
+    agh = AgeGenderHelper(deploy)
+    # ageLabel = agh.toAgeLabel(ageLE)
+    # genderLabel = agh.toGenderLabel(genderLE)
+    # print(ageLabel)
+    ageCanvas = agh.visualizeAge(agePreds, ageLE)
+    genderCanvas = agh.visualizeGender(genderPreds, genderLE)
+    # oneOff = agh.buildOneOffMappings(le)
+
     image = imutils.resize(image, width=400)
 
     # format and display the top predicted class label
     gtLabel = ageLE.inverse_transform(int(gtLabel))
-    text = "Actual: {}-{}".format(*getLabel.split("_"))
+    text = "Actual: {}-{}".format(*gtLabel.split("_"))
     cv2.putText(image, text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX,
                 0.7, (0, 0, 255), 3)
 

@@ -145,4 +145,57 @@ class AgeGenderHelper:
         # return a tuple of image paths and labels
         return (paths, labels)
 
+    def visualizeAge(self, Preds, LE):
+        canvas = np.zeros((220, 300, 3), dtype="uint8")
+        # preds = model.predict(roi)[0]
+        # label = EMOTIONS[preds.argmax()]
+        classes = sorted(LE.classes_, key=lambda x:
+                         int(x.split("_")[0]))  # need to remove the code: decode("utf-8")
+        ageIdxs = np.argsort(Preds)[::-1]
+        classesTmp = []
+        PredsTmp = []
+        for (i, index) in enumerate(ageIdxs):
+            classesTmp.append(classes[index])
+            PredsTmp.append(Preds[index])
+
+        # loop over the labels + probabilities and draw them
+        for (i, (emotion, prob)) in enumerate(zip(classesTmp, PredsTmp)):
+            # construct the label text
+            text = "{}: {:.2f}%".format(emotion, prob * 100)
+
+            # draw the label + probability bar on the canvas
+            w = int(prob * 300)
+            cv2.rectangle(canvas, (5, (i * 35) + 5),
+                  (w, (i * 35) + 35), (0, 0, 255), -1)
+            cv2.putText(canvas, text, (10, (i * 35) + 23),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.45,
+                        (255, 255, 255), 2)
+        return canvas
+
+    def visualizeGender(self, Preds, LE ):
+        canvas = np.zeros((220, 300, 3), dtype="uint8")
+        # preds = model.predict(roi)[0]
+        # label = EMOTIONS[preds.argmax()]
+        classes = sorted(LE.classes_, key=lambda x:
+                         int(x))  # need to remove the code: decode("utf-8")
+        genderIdxs = np.argsort(Preds)[::-1]
+        classesTmp = []
+        PredsTmp = []
+        for (i, index) in enumerate(genderIdxs):
+            classesTmp.append(classes[index])
+            PredsTmp.append(Preds[index])
+
+        # loop over the labels + probabilities and draw them
+        for (i, (emotion, prob)) in enumerate(zip(classesTmp, PredsTmp)):
+            # construct the label text
+            text = "{}: {:.2f}%".format(emotion, prob * 100)
+
+            # draw the label + probability bar on the canvas
+            w = int(prob * 300)
+            cv2.rectangle(canvas, (5, (i * 35) + 5),
+                  (w, (i * 35) + 35), (0, 0, 255), -1)
+            cv2.putText(canvas, text, (10, (i * 35) + 23),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.45,
+                        (255, 255, 255), 2)
+        return canvas
 

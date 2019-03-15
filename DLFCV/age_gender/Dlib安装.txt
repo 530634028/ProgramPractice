@@ -1,0 +1,15 @@
+1、在Github上下载dlib源码
+
+2、执行：python setup.py install
+
+3、Q： CMAKE_CXX_COMPILER-NOTFOUND  
+     Solutions：（查找问题时必须查看在编译的过程中，错误输出信息）
+                     其默认的编译器为找到（其默认的是Visual Studio 11 2012？？？）
+
+        C++11 is required to use dlib, but the version of Visual Studio you are
+  using is too old and doesn't support C++11.  You need Visual Studio 2015 or
+  newer.
+     需要安装VS2015？？？--- Note that you need to have CMake and a working C++ compiler installed for this to work.
+
+
+4、

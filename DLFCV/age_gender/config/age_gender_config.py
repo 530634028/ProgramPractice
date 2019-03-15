@@ -14,11 +14,11 @@ DATASET_TYPE = "age"  # "gender" for gender dataset, "age" for age dataset
 
 # define the base paths to the faces dataset and output path
 # the path of company computer
-# BASE_PATH = "../../../data/adience"
-# OUTPU_BASE = "../../../data/adience/output"
+BASE_PATH = "../../../data/adience"
+OUTPU_BASE = "../../../data/adience/output"
 # the path of home computer
-BASE_PATH = "../../../../data/adience"
-OUTPU_BASE = "../../../../data/adience/output"
+# BASE_PATH = "../../../../data/adience"
+# OUTPU_BASE = "../../../../data/adience/output"
 
 MX_OUTPUT = BASE_PATH
 

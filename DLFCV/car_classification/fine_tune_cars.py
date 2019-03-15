@@ -6,6 +6,9 @@
 """
 
 # import the necessary packages
+import sys
+sys.path.append("F:\ProgramPractice\DLFCV")
+
 from config import car_config as config
 import mxnet as mx
 import argparse
@@ -60,7 +63,7 @@ valIter = mx.io.ImageRecordIter(
 # initialize the optimmizer
 opt = mx.optimizer.SGD(learning_rate=1e-4, momentum=0.9, wd=0.0005,
                        rescale_grad=1.0 / batchSize)
-ctx = [mx.gpu(3)]
+ctx = [mx.gpu(0)]
 
 # construct the checkpoints path, initialize the model argument and
 # auxiliary parameters
@@ -123,7 +126,7 @@ model = mx.mod.Module(symbol=net, context=ctx)
 model.fit(
     trainIter,
     eval_data=valIter,
-    num_epoch=65,
+    num_epoch=30,      # when reach this num, stop training; original num is 65
     begin_epoch=args["start_epoch"],
     initializer=mx.initializer.Xavier(),
     arg_params=argParams,

@@ -6,8 +6,8 @@
 """
 
 import sys
-# sys.path.append("F:\ProgramPractice\DLFCV")
-sys.path.append("E:\ZWDX_Learn\ProgramPractice\DLFCV")
+sys.path.append("F:\ProgramPractice\DLFCV")
+#sys.path.append("E:\ZWDX_Learn\ProgramPractice\DLFCV")
 
 # since 'AgeGenderHelper' also imports OpenCV, we need to place it
 # above the mxnet import to avoid a segmentation fault

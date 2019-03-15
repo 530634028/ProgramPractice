@@ -25,7 +25,8 @@ import argparse
 import pickle
 import imutils
 import json
-import dlib
+# test zhong
+# import dlib
 import os
 
 
@@ -80,9 +81,9 @@ iap = ImageToArrayPreprocessor(dataFormat="channels_first")  # because mxnet use
 
 # initialize dlib's face detector (HOG-based), then create the
 # the facial labdmark predictor and face aligner
-detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor(deploy.DLIB_LANDMARK_PATH)
-fa = FaceAligner(predictor)
+# detector = dlib.get_frontal_face_detector()
+# predictor = dlib.shape_predictor(deploy.DLIB_LANDMARK_PATH)
+# fa = FaceAligner(predictor)
 
 # initialize the list of image paths as just a single image
 imagePaths = [args["image"]]
@@ -99,74 +100,91 @@ for imagePath in imagePaths:
     print("[INFO] processing {}".format(imagePath))
     image = cv2.imread(imagePath)
     image = imutils.resize(image, width=800)
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # test zhong
+    # gray = image
 
     # detect faces in the grayscale image
-    rects = detector(gray, 1)
+    # rects = detector(gray, 1)
+    # test zhong
+    # rects = gray
 
-    # loop over the face detections
-    for rect in rects:
-        # determine the facial landmarks for the face region, then
-        # align the face
-        shape = predictor(gray, rect)
-        face = fa.align(image, gray, rect)
+    # determine the facial landmarks for the face region, then
+    # align the face
+    # shape = predictor(gray, rect)
+    # face = fa.align(image, gray, rect)
+    # test zhong
+    shape = image.shape
+    # face = rect
 
-        # resize the face to a fixed size, then extract 10-crop
-        # patches from it
-        face = sp.preprocess(face)
-        patches = cp.preprocess(face)
+    # resize the face to a fixed size, then extract 10-crop
+    # patches from it
+    face = sp.preprocess(image)
+    patches = cp.preprocess(image)
 
-        # allocate memory for the age and gender pathces
-        agePatches = np.zeros((patches.shape[0], 3, 227, 227),
-                              dtype="float")
-        genderPatches = np.zeros((patches.shape[0], 3, 227, 227),
-                              dtype="float")
+    # allocate memory for the age and gender pathces
+    agePatches = np.zeros((patches.shape[0], 3, 227, 227),
+                          dtype="float")
+    genderPatches = np.zeros((patches.shape[0], 3, 227, 227),
+                          dtype="float")
 
-        # print(patches.shape[0])
+    # print(patches.shape[0])
 
-        # loop over the patches
-        for j in np.arange(0, patches.shape[0]):
-            # perform mean subtraction on the patch
-            agePatch = ageMp.preprocess(patches[j])
-            genderPatch = genderMp.preprocess(patches[j])
-            agePatch = iap.preprocess(agePatch)
-            genderPatch = iap.preprocess(genderPatch)
+    # loop over the patches
+    for j in np.arange(0, patches.shape[0]):
+        # perform mean subtraction on the patch
+        # agePatch = ageMp.preprocess(patches[j])
+        # genderPatch = genderMp.preprocess(patches[j])
+        # agePatch = iap.preprocess(agePatch)
+        # genderPatch = iap.preprocess(genderPatch)
 
-            # update the respective patches lists
-            agePatches[j] = agePatch
-            genderPatches[j] = genderPatch
+        # test zhong
+        agePatch = iap.preprocess(patches[j])
+        genderPatch = iap.preprocess(patches[j])
 
-        # classify the image and grab the indexes of the top-5 predictions
-        agePreds = ageModel.predict(agePatches)
-        genderPreds = genderModel.predict(genderPatches)
 
-        # compute the average for each class label based on the
-        # predictions for the patches
-        agePreds = agePreds.mean(axis=0)
-        genderPreds = genderPreds.mean(axis=0)
+        # update the respective patches lists
+        agePatches[j] = agePatch
+        genderPatches[j] = genderPatch
 
-        # visualize the age and gender predictions
-        # ageCanvas = AgeGenderHelper.visualizeAge(agePreds, ageLE)  # we didn't have this functions
-        # genderCanvas = AgeGenderHelper.visualizeAge(genderPreds,
-        #                                             genderLE)
+    # classify the image and grab the indexes of the top-5 predictions
+    # face = cp.preprocess(face)
+    # face = iap.preprocess(face)
+    #
+    agePreds = ageModel.predict(agePatches)
+    genderPreds = genderModel.predict(genderPatches)
 
-        agh = AgeGenderHelper(deploy)
-        # print(ageLabel)
-        ageCanvas = agh.visualizeAge(agePreds, ageLE)
-        genderCanvas = agh.visualizeGender(genderPreds, genderLE)
+    # compute the average for each class label based on the
+    # predictions for the patches
+    agePreds = agePreds.mean(axis=0)
+    genderPreds = genderPreds.mean(axis=0)
 
-        # draw the bounding box around the face
-        clone = image.copy()
-        (x, y, w, h) = face_utils.rect_to_bb(rect)
-        cv2.rectangle(clone, (x, y), (x + w, y + h), (0, 255, 0),
-                      2)
+    # visualize the age and gender predictions
+    # ageCanvas = AgeGenderHelper.visualizeAge(agePreds, ageLE)  # we didn't have this functions
+    # genderCanvas = AgeGenderHelper.visualizeAge(genderPreds,
+    #                                             genderLE)
 
-        # show the image
-        cv2.imshow("Input", clone)
-        cv2.imshow("Face", face)
-        cv2.imshow("Age Probabilities", ageCanvas)
-        cv2.imshow("Gender Probabilities", genderCanvas)
-        cv2.waitKey(0)
+    agh = AgeGenderHelper(deploy)
+    # print(ageLabel)
+    ageCanvas = agh.visualizeAge(agePreds, ageLE)
+    genderCanvas = agh.visualizeGender(genderPreds, genderLE)
+
+    # draw the bounding box around the face
+    clone = image.copy()
+    # (x, y, w, h) = face_utils.rect_to_bb(rect)
+    # cv2.rectangle(clone, (x, y), (x + w, y + h), (0, 255, 0),
+    #               2)
+    # test zhong
+    text = "Actual: {}-{}"
+    cv2.putText(image, text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX,
+                0.7, (0, 0, 255), 3)
+
+    # show the image
+    # cv2.imshow("Input", clone)
+    cv2.imshow("Face", face)
+    cv2.imshow("Age Probabilities", ageCanvas)
+    cv2.imshow("Gender Probabilities", genderCanvas)
+    cv2.waitKey(0)
 
 
 # python test_prediction.py --image examples

@@ -12,26 +12,31 @@ sys.path.append("F:\ProgramPractice\DLFCV")
 from config import car_config as config
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
+from car_classification.read_annotates import read_annotates
 import progressbar
 import pickle
-import os
 
 # read the contents of the labels file, then initialize the list of
 # image path and labels
 print("[INFO] loading image paths and labels...")
-rows = open(config.LABELS_PATH).read()
-rows = rows.strip().split("\n")[1:]
-trainPaths = []
-trainLabels = []
+# rows = open(config.LABELS_PATH).read()
+# rows = rows.strip().split("\n")[1:]
+# trainPaths = []
+# trainLabels = []
+#
+# # loop over the rows
+# for row in rows:
+#     # unpack the row, then update the image paths and labels list
+#     # (filename, make) = row.split(",")[:2]
+#     (filename, make, model) = row.split(",")[:3]
+#     filename = filename[filename.rfind("/") + 1:]
+#     trainPaths.append(os.sep.join([config.IMAGES_PATH, filename]))
+#     trainLabels.append("{}:{}".format(make, model))
 
-# loop over the rows
-for row in rows:
-    # unpack the row, then update the image paths and labels list
-    # (filename, make) = row.split(",")[:2]
-    (filename, make, model) = row.split(",")[:3]
-    filename = filename[filename.rfind("/") + 1:]
-    trainPaths.append(os.sep.join([config.IMAGES_PATH, filename]))
-    trainLabels.append("{}:{}".format(make, model))
+
+# test zhong
+(trainPaths, trainLabels)= read_annotates()
+# print(trainPaths.shape)
 
 # now that we have the total number of images in the dataset that
 # can be used for training, compute the number of images that

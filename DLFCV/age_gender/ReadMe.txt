@@ -20,7 +20,26 @@
 
 6、Q:为什么从120开始训练的时候没有结果？？？
      Solutions：因为num_epoch = 40 而start_epoch设置的为120；意思要理解为从start_epoch开始训练到num_epoch，所以设置参数错误
+
 7、python plot_log.py --network AgeNet --dataset AgeData
+
+8、Q: Error in operator convolution0: Shape inconsistent, Provided = [96,3,7,7], inferred shape=(96,227,7,7)
+     Solutions：iap = ImageToArrayPreprocessor() 改为iap = ImageToArrayPreprocessor(dataFormat="channels_first")
+     因为程序使用的opencv读取图像，读取图像之后是channels_last的格式即：（1， 227， 227,  3），而mxnet所使用的图像格式是channels_first：（1， 3,  227，227）
+
+9、Q： TypeError: visualizeAge() missing 1 required positional argument: 'LE'
+      Solutions： 定义类，再使用类进行调用成员函数；类的成员函数不能直接调用（常识）
+
+10、安装dlib（用于人脸的检测）：
+
+11、pycharm 缩进：左移：shift + Tab  右移：Tab
+   
+     
+
+
+
+
+
 
      
      

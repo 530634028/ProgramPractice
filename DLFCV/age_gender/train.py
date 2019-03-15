@@ -7,8 +7,8 @@
 
 # import the necessary packages
 import sys
-#sys.path.append("F:\ProgramPractice\DLFCV")
-sys.path.append("E:\ZWDX_Learn\ProgramPractice\DLFCV")
+sys.path.append("F:\ProgramPractice\DLFCV")
+#sys.path.append("E:\ZWDX_Learn\ProgramPractice\DLFCV")
 
 from config import age_gender_config as config
 from pyimagesearch.nn.mxconv.mxagegender import MxAgeGenderNet
@@ -69,10 +69,10 @@ valIter = mx.io.ImageRecordIter(
 )
 
 # initialize the optimmizer
-opt = mx.optimizer.Adam(learning_rate=1e-6, wd=0.0005) #, momentum=0.9, wd=0.0005,  # fine tuning value le-3 le-5 le-6 SGD
-                       # rescale_grad=1.0 / batchSize)
-                       # le-4 le-5 le-6
+# opt = mx.optimizer.Adam(learning_rate=1e-6, wd=0.0005)   # le-4 le-5 le-6
 
+opt = mx.optimizer.SGD(learning_rate=1e-4, momentum=0.9, wd=0.0005,    # fine tuning value le-2 le-5 le-6 SGD
+                        rescale_grad=1.0 / batchSize)
 # SGD(learning_rate=1e-4, momentum=0.9, wd=0.0005,     # fine tuning value le-3 le-5 le-6 SGD
 #                        rescale_grad=1.0 / batchSize)
 
@@ -108,7 +108,7 @@ model = mx.model.FeedForward(
     arg_params=argParams,
     aux_params=auxParams,
     optimizer=opt,
-    num_epoch=150,   # change as you need, original value is 120
+    num_epoch=110,   # change as you need, original value is 120
     begin_epoch=args["start_epoch"]
 )
 
