@@ -51,6 +51,9 @@ print("[INFO] encoding labels...")
 le = LabelEncoder().fit(trainLabels)
 trainLabels = le.transform(trainLabels)
 
+# test transform and inverse_transform function
+# print(trainLabels)
+
 # perform sampling from the training set to construct a validation
 # set
 print("[INFO] constructing validation data...")

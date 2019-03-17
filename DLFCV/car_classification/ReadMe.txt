@@ -26,4 +26,17 @@
 11、调整代码，不需要每个epoch都进行保存checkpoints；
 
 12、test_cars: python test_cars.py --checkpoints E:\data\cars\checkpoints\ --prefix vggnet --epoch 55
+       Q：ValueError: bad input shape ()
+       solutions：inverse_transform function need list (--[]--) parameters
+       sklearn：编码器使用实例
+           >>> from sklearn import preprocessing
+           >>> le = preprocessing.LabelEncoder()
+           >>> le.fit([1, 2, 2, 6])
+           LabelEncoder()
+           >>> le.classes_
+           array([1, 2, 6])
+           >>> le.transform([1, 1, 2, 6]) #doctest: +ELLIPSIS
+           array([0, 0, 1, 2]...)
+           >>> le.inverse_transform([0, 0, 1, 2])
+           array([1, 1, 2, 6])
 
