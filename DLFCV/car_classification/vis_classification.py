@@ -10,7 +10,8 @@ import cv2
 
 # import the necessary packages
 import sys
-sys.path.append("F:\ProgramPractice\DLFCV")
+# sys.path.append("F:\ProgramPractice\DLFCV")
+sys.path.append("E:\ZWDX_Learn\ProgramPractice\DLFCV")
 
 from config import car_config as config
 from pyimagesearch.preprocessing.imagetoarraypreprocessor import ImageToArrayPreprocessor
@@ -18,6 +19,7 @@ from pyimagesearch.preprocessing.aspectawarepreprocessor import AspectAwarePrepr
 from pyimagesearch.preprocessing.meanpreprocessor import MeanPreprocessor
 import numpy as np
 import mxnet as mx
+import sklearn as sk
 import argparse
 import pickle
 import imutils
@@ -81,24 +83,23 @@ for row in rows:
     idxs = np.argsort(preds)[::-1][:5]
 
     # show the true class label
-    print("[INFO] actual={}".format(le.inverse_transform(target)))
+    # print("[INFO] actual={}".format(le.inverse_transform(target)))
 
     # format and display the top predicted class label
-    label = le.inverse_transform(idxs[0])
-    label = label.replace(":", " ")
-    label = "{}: {:.2}%".format(label, preds[idxs[0]] * 100)
+    # label = le.inverse_transform(idxs[0])
+    # label = label.replace(":", " ")
+    label = idxs[0]
+    label = "{}: {:.2f}%".format(label, preds[idxs[0]] * 100)  # label
     cv2.putText(orig, label, (10, 30), cv2.FONT_HERSHEY_SIMPLEX,
                 0.6, (0, 255, 0), 2)
 
     # loop over the predictions and display them
     for (i, prob) in zip(idxs, preds):
         print("\t[INFO] predicted={}, probability={:.2f}%".format(
-            le.inverse_transform(i), preds[i] * 100
+            le.transform(i), preds[i] * 100
         ))
 
     # show the image
     cv2.imshow("Image", orig)
     cv2.waitKey()
-
-
 

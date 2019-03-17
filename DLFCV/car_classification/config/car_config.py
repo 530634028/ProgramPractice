@@ -9,9 +9,9 @@ from os import path
 
 # define the base path to where the ImageNet dataset
 # devkit are stored on disk
-BASE_PATH = "../../../data/cars"
+# BASE_PATH = "../../../data/cars"
 # the path of home computer
-# BASE_PATH = "../../../../data/cars"
+BASE_PATH = "../../../../data/cars"
 
 # based on the base path, derive the images base path, image sets
 # path, and devkit path
@@ -47,7 +47,7 @@ NUM_VAL_IMAGES = 0.15  # error, assiagn to 0.16, cause can't find 12372.jpg imag
 NUM_TEST_IMAGES = 0.15
 
 # define the batch size and number of devices used for training
-BATCH_SIZE = 16  # original batch size is 32
+BATCH_SIZE = 32  # original batch size is 32
 NUM_DEVICES = 1
 
 

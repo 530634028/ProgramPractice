@@ -7,7 +7,8 @@
 
 # import the necessary packages
 import sys
-sys.path.append("F:\ProgramPractice\DLFCV")
+# sys.path.append("F:\ProgramPractice\DLFCV")
+sys.path.append("E:\ZWDX_Learn\ProgramPractice\DLFCV")
 
 from config import car_config as config
 import mxnet as mx
@@ -61,7 +62,7 @@ valIter = mx.io.ImageRecordIter(
 )
 
 # initialize the optimmizer
-opt = mx.optimizer.SGD(learning_rate=1e-4, momentum=0.9, wd=0.0005,
+opt = mx.optimizer.SGD(learning_rate=5e-5, momentum=0.9, wd=0.0005,
                        rescale_grad=1.0 / batchSize)
 ctx = [mx.gpu(0)]
 
@@ -126,7 +127,7 @@ model = mx.mod.Module(symbol=net, context=ctx)
 model.fit(
     trainIter,
     eval_data=valIter,
-    num_epoch=30,      # when reach this num, stop training; original num is 65
+    num_epoch=55,      # when reach this num, stop training; original num is 65
     begin_epoch=args["start_epoch"],
     initializer=mx.initializer.Xavier(),
     arg_params=argParams,

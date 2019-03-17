@@ -7,7 +7,7 @@
 
 4、返回值怎么能够写在for循环中（error）
 
-5、python im2rec.py F:\data\cars\lists\train.lst F:\data\cars\rec\train.rec --resize=256 --encoding=.jpg --quality=100  --num-thread
+5、python im2rec.py F:\data\cars\lists\train.lst F:\data\cars\rec --resize=256 --encoding=.jpg --quality=100  --num-thread
  4
      Q：存在问题，读取图像的路径是错误的？？？？
      Solutions：在配置文件中将car_ims路径写成了cars_ims，导致在读取图像时错误
@@ -18,3 +18,12 @@
 
 8、训练命令：python fine_tune_cars.py --vgg F:\data\cars\vgg16\vgg16  --checkpoints F:\data\cars\checkpoints --prefix vggnet  
      ---注意---F:\data\cars\vgg16\vgg16其中最后的vgg16是用于作为识别目录文件的前缀
+
+9、python fine_tune_cars.py --vgg F:\data\cars\vgg16\vgg16  --checkpoints F:\data\cars\checkpoints --prefix vggnet  --start-epoch 45
+
+10、SGD_le4-5_30_45   --->理解命名的含义，优化器、lr、numepoch（对应前面的lr）
+
+11、调整代码，不需要每个epoch都进行保存checkpoints；
+
+12、test_cars: python test_cars.py --checkpoints E:\data\cars\checkpoints\ --prefix vggnet --epoch 55
+
