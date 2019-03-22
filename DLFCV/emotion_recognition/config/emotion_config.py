@@ -19,6 +19,7 @@ INPUT_PATH = path.sep.join([BASE_PATH, "fer2013/fer2013.csv"])
 
 # since we do not have access to testing data we need to
 # take a number of images from the training data and use it instead
+# NUM_CLASSES = 7
 NUM_CLASSES = 6
 
 # define the path to the output training, validation, and testing

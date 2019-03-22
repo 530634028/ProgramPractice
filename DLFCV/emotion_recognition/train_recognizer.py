@@ -65,7 +65,7 @@ if args["model"] is None:
 else:
     print("[INFO] loading {}...".format(args["model"]))
     fPath = os.path.sep.join([config.OUTPUT_PATH, args["model"]])
-    model = load_model(fPath)  #(args["model"])
+    model = load_model(fPath)  # load_model(args["model"])
 
     # upate the learning rate
     print("[INFO] old learning rate: {}".format(
@@ -100,7 +100,8 @@ model.fit_generator(
     steps_per_epoch=trainGen.numImages // config.BATCH_SIZE,
     validation_data=valGen.generator(),
     validation_steps=valGen.numImages // config.BATCH_SIZE,
-    epochs=10,  # first 100
+    initial_epoch=args["start_epoch"],
+    epochs=75,  # first 100, training until reach epochs(is not trained for epochs step)
     max_queue_size=config.BATCH_SIZE * 2,
     callbacks=callbacks,
     verbose=1
@@ -111,6 +112,7 @@ trainGen.close()
 valGen.close()
 
 # $ python train_recognizer.py --checkpoints checkpoints
+# python train_recognizer.py --checkpoints checkpoints --model checkpoints\weights-050.hdf5 --start-epoch 60
 
 
 

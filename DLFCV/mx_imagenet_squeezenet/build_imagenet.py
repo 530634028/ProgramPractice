@@ -1,11 +1,14 @@
+
+"""
 #
 # Build the training set and validation
 # a : zhonghy
 # date: 2018-10-29
 #
 
+"""
 # import the necessary packages
-from config import imagenet_alexnet_config as config
+from config import imagnet_squeezenet_config as config
 from sklearn.model_selection import train_test_split
 from pyimagesearch.utils.imagenethelper import ImageNetHelper
 import numpy as np

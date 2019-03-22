@@ -1,9 +1,12 @@
+
+"""
 #
 # Test Googlenet on ImageNet dataset
 # a : zhonghy
 # date: 2018-12-4
 #
 
+"""
 # import hte necessary packages
 from config import imagenet_squeezenet_config as config
 import mxnet as mx
