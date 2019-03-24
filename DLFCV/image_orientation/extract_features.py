@@ -8,7 +8,8 @@
 
 # import the necessary packages
 import sys
-sys.path.append("F:\ProgramPractice\DLFCV")
+# sys.path.append("F:\ProgramPractice\DLFCV")
+sys.path.append("E:\ZWDX_Learn\ProgramPractice\DLFCV")
 
 from keras.applications import VGG16
 from keras.applications import imagenet_utils
@@ -31,7 +32,7 @@ ap.add_argument("-o", "--output", required=True,
                 help="path to output HDF5 file")
 ap.add_argument("-b", "--batch-size", type=int, default=32,
                 help="batch size of images to be passed through network")
-ap.add_argument("-s", "--buffer-size", type=int, default=1000,
+ap.add_argument("-s", "--buffer-size", type=int, default=1000,   # original value is 1000
                 help="size of feature extraction buffer")
 args = vars(ap.parse_args())
 
@@ -113,3 +114,6 @@ pbar.finish()
 
 # python extract_features.py --dataset indoor_cvpr/rotated_images \
 # --output indoor_cvpr/hdf5/orientation_features.hdf5
+
+# https://github.com/fchollet/deep-learning-models/releases/download/v0.1/
+# vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5   # model of vgg16

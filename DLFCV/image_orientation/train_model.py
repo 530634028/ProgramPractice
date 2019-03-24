@@ -21,7 +21,7 @@ ap.add_argument("-d", "--db", required=True,
                 help="path to HDF5 database")
 ap.add_argument("-m", "--model", required=True,
                 help="path to output model")
-ap.add_argument("-j", "--jobs", type=int, default=-1,
+ap.add_argument("-j", "--jobs", type=int, default=1,                 # original value is -1
                 help="# of jobs to run when tuning hyperparameters")
 args = vars(ap.parse_args())
 
@@ -35,10 +35,10 @@ i = int(db["labels"].shape[0] * 0.75)
 # define the set od parameters that we want to tune then start a
 # grid search where we evaluate our model for each value of C
 print("[INFO] tuning hyperparameters...")
-params = {"C": [0.1, 1.0, 10.0, 100.0, 1000.0, 10000.0]}
-model = GridSearchCV(LogisticRegression(), params,cv=3,
+params = {"C": [0.1, 1.0, 10.0, 100.0, 1000.0, 10000.0]}   # original params [0.1, 1.0, 10.0, 100.0, 1000.0, 10000.0]
+model = GridSearchCV(LogisticRegression(), params, cv=3,
                      n_jobs=args["jobs"])
-model.fit(db["features"][:i], db["labels"][:i])
+model.fit(db["features"][:i], db["labels"][:i])  # from start element to ith
 print("[INFO] best hyperparameters: {}".format(model.best_params_))
 
 # evaluate the model

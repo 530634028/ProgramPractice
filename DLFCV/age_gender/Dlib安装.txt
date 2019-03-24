@@ -12,4 +12,9 @@
      需要安装VS2015？？？--- Note that you need to have CMake and a working C++ compiler installed for this to work.
 
 
-4、
+4、执行3时出现Q： error: can't create or remove files in install directory
+    Solutions：以管理员身份运行windows power shell（点击右键）
+
+5、默认的安装环境：需安装cmake、需vs2015以上，需安装cudnn（cuda 深度学习库）
+
+6、
