@@ -29,6 +29,9 @@ import keras.backend as K
 import argparse
 import json
 
+from keras.callbacks import ModelCheckpoint
+import os
+
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-c", "--checkpoints", required=True,
@@ -86,9 +89,13 @@ else:
     ))
 
 # construct the set of callbacks
+fname = os.path.sep.join([args["checkpoints"],
+                          "weights-{epoch:03d}.hdf5"])
+modelCheck = ModelCheckpoint(fname, monitor="val_acc", mode="max")
 callbacks = [
-    EpochCheckpoint(args["checkpoints"], every=1,
-                    startAt=args["start_epoch"]),
+    # EpochCheckpoint(args["checkpoints"], every=1,
+    #                 startAt=args["start_epoch"])
+    modelCheck,
     TrainingMonitor(config.FIG_PATH, jsonPath=config.JSON_PATH,
                     startAt=args["start_epoch"])
 ]
@@ -99,7 +106,7 @@ model.fit_generator(
     steps_per_epoch=trainGen.numImages // 64,
     validation_data=valGen.generator(),
     validation_steps=valGen.numImages // 64,
-    epochs=10,
+    epochs=40,
     max_queue_size=64 * 2,
     callbacks=callbacks,
     verbose=1

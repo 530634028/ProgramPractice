@@ -1,8 +1,11 @@
+"""
 #
 # description: implement for knn,need other library
 # a: zhonghy in DLFCV
 # date: 2018-6-22
 #
+
+"""
 
 # import the necessary packages
 from sklearn.neighbors import KNeighborsClassifier
@@ -16,7 +19,7 @@ import argparse
 
 # construct the argument parse and parse arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-d", "--dataseet", required=True,
+ap.add_argument("-d", "--dataset", required=True,
                 help="path to input dataset")
 ap.add_argument("-k", "--neighbors", type=int, default=1,
                 help="# of nearest neighbors for classification")

@@ -1,9 +1,12 @@
+"""
 #
 # description: implement for simple gradient_descent,
 #              need other library
 # a: zhonghy in DLFCV
 # date: 2018-7-3
 #
+
+"""
 
 # import the necessary packages
 from sklearn.model_selection import train_test_split

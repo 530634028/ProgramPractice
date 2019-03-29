@@ -12,9 +12,10 @@ from keras.callbacks import BaseLogger
 import matplotlib.pyplot as plt
 import numpy as np
 import json
+import keras as K
 import os
 
-class EpochCheckpoint(keras.callbacks.Callback):
+class EpochCheckpoint(K.callbacks.Callback):
     def __init__(self, startPath, every=1, startAt=0):
         super(EpochCheckpoint, self).__init__()
         self.startPath = startPath
