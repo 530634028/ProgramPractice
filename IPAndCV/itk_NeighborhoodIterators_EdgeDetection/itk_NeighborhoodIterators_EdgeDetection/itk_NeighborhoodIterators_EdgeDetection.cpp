@@ -14,11 +14,19 @@
 #include "itkImage.h"
 //#include "itkPNGImageIOFactory.h"
 
+#include "itkImageIOFactory.h"
+#include "itkBMPImageIOFactory.h"   // necessary
+#include "itkJPEGImageIOFactory.h"
+#include "itkPNGImageIOFactory.h"
+#include "itkImageIOBase.h"
+
+//#include "itkRGBAPixel.h"
+
 //using namespace itk;
 
 int main(int argc, char *argv[])
 {
-	typedef unsigned char                     PixelType ;   //float
+	typedef unsigned char                    PixelType ;   //float
 	typedef itk::Image<PixelType, 2>          ImageType ;
 	typedef itk::ImageFileReader< ImageType > ReaderType;
 
@@ -31,10 +39,14 @@ int main(int argc, char *argv[])
 
 	typedef itk::RescaleIntensityImageFilter< ImageType, WriteImageType> RescaleFilterType;
 	//itk::ObjectFactoryBase::RegisterFactory(itk::PNGImageIOFactory::New());
+	itk::BMPImageIOFactory::RegisterOneFactory();    // necessary  ???? why
+	itk::JPEGImageIOFactory::RegisterOneFactory();
+	itk::PNGImageIOFactory::RegisterOneFactory();
+
 
 
 	ReaderType::Pointer reader = ReaderType::New();
-	char *fileNname = "F:/ProgramPractice/IPAndCV/itk_NeighborhoodIterators_EdgeDetection/BrainT1Slice.png";
+	char *fileNname = "F:\\ProgramPractice\\IPAndCV\\itk_NeighborhoodIterators_EdgeDetection\\BrainT1Slice.png";
 	reader->SetFileName(fileNname);
 	//reader->SetImageIO();
 
@@ -101,3 +113,17 @@ int main(int argc, char *argv[])
 	}
 }
 
+
+//#include "itkImage.h"
+//#include <iostream>
+//
+//int main()
+//{
+//	typedef itk::Image< unsigned short, 3 > ImageType;
+//
+//	ImageType::Pointer image = ImageType::New();
+//
+//	std::cout << "ITK Hello World !" << std::endl;
+//
+//	return 0;
+//}
