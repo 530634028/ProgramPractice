@@ -19,8 +19,10 @@ int main( int argc, char** argv )
 	src = imread( filePath.c_str(), 1 );
 
 	if( !src.data )
-	{ cout<<"Usage: ./Histogram_Demo <path_to_image>"<<endl;
-	return -1;}
+	{ 
+		cout<<"Usage: ./Histogram_Demo <path_to_image>"<<endl;
+	    return -1;
+	}
 
 	/// תΪ�Ҷ�ͼ
 	cvtColor( src, src, COLOR_BGR2GRAY );

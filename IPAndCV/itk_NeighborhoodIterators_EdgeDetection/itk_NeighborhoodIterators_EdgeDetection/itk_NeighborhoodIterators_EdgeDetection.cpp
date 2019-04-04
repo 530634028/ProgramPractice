@@ -12,21 +12,18 @@
 #include "itkImageFileWriter.h"
 #include "itkRescaleIntensityImageFilter.h"
 #include "itkImage.h"
-//#include "itkPNGImageIOFactory.h"
 
-#include "itkImageIOFactory.h"
-#include "itkBMPImageIOFactory.h"   // necessary
+#include "itkImageIOFactory.h"         //necessary, if omitted, program can't create IO factory
+#include "itkBMPImageIOFactory.h"   
 #include "itkJPEGImageIOFactory.h"
 #include "itkPNGImageIOFactory.h"
 #include "itkImageIOBase.h"
-
-//#include "itkRGBAPixel.h"
 
 //using namespace itk;
 
 int main(int argc, char *argv[])
 {
-	typedef unsigned char                    PixelType ;   //float
+	typedef float                             PixelType ;   //float or unsigned char; with different type, we have different result
 	typedef itk::Image<PixelType, 2>          ImageType ;
 	typedef itk::ImageFileReader< ImageType > ReaderType;
 
@@ -39,11 +36,9 @@ int main(int argc, char *argv[])
 
 	typedef itk::RescaleIntensityImageFilter< ImageType, WriteImageType> RescaleFilterType;
 	//itk::ObjectFactoryBase::RegisterFactory(itk::PNGImageIOFactory::New());
-	itk::BMPImageIOFactory::RegisterOneFactory();    // necessary  ???? why
+	itk::BMPImageIOFactory::RegisterOneFactory();   
 	itk::JPEGImageIOFactory::RegisterOneFactory();
 	itk::PNGImageIOFactory::RegisterOneFactory();
-
-
 
 	ReaderType::Pointer reader = ReaderType::New();
 	char *fileNname = "F:\\ProgramPractice\\IPAndCV\\itk_NeighborhoodIterators_EdgeDetection\\BrainT1Slice.png";

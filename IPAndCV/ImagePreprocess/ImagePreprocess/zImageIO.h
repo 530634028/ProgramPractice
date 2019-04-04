@@ -44,15 +44,15 @@ public:
 	~zImageIO(){};
 	int SetImageData(cv::Mat &src);
     int ReadImageData(std::string fileName);
-	Mat &GetImageData(){ return m_imageData; };
+	Mat &GetImageData()
+	{ 
+		return m_imageData;
+	}
 
 private:
 	cv::Mat   m_imageData;
 	ImageDim  m_imageInfo;
 };
-
-
-
 
 #endif
 
