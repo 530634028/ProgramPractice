@@ -7,7 +7,7 @@
 # import the necessary packages
 from config import tiny_imagenet_config as config
 
-import sys;
+import sys
 sys.path.append("F:\ProgramPractice\DLFCV")
 
 from pyimagesearch.preprocessing.imagetoarraypreprocessor import ImageToArrayPreprocessor

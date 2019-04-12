@@ -1,9 +1,12 @@
+
+"""
 #
 # Implement of deeper googlenet
 # a : zhonghy
 # date: 2018-9-5
 #
 
+"""
 # import the necessary packages
 from keras.layers.normalization import BatchNormalization
 from keras.layers.convolutional import Conv2D
