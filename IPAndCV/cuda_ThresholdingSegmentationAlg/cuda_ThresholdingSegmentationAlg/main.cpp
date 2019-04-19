@@ -30,14 +30,22 @@ int main(int argc, char **argv)
 	double timeComsume;
 	timeStart = clock();
 
-	int erroflag = cuda_ThresholdingSegmentationAlg(src_gray, result, 200);
+	int erroflag = cuda_ThresholdingSegmentationAlg(src_gray, result, 230);
 	//int erroflag = cpu_ThresholdingSegmentationAlg(src_gray, result);
+	Mat cpuDilateResult =  Mat::zeros(src.rows, src.cols, CV_8UC1);
+	Mat gpuDilateResult = Mat::zeros(src.rows, src.cols, CV_8UC1);
+	erroflag = cpu_IntelligenceDilate(src_gray, result, cpuDilateResult, 150, 250, 3);
+	erroflag = cuda_IntelligenceDilate(src_gray, result, gpuDilateResult, 150, 250, 3);
+
 
 	timeEnd = clock();
 	std::cout << "GPU Use Time: " <<(double)(timeEnd - timeStart)/CLOCKS_PER_SEC << std::endl;
 
+	Mat tmp = cpuDilateResult - gpuDilateResult;  // result
+
 	cv::imshow("original image", src_gray);
 	cv::imshow("thresold_cuda", result);
+	cv::imshow("dilate_cuda", tmp);  //dilateResult
 	//cv::imshow("sobel cpu", dst);
 	cv::waitKey();
 
