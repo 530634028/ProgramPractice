@@ -10,6 +10,7 @@
 #include <string>
 #include "zImageIO.h"
 #include "cuda_ThresholdingSegmentationAlg.h"
+#include "cuda_IntelligenceDilateAlg.h"
 
 #include <time.h>
 
