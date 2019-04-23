@@ -14,6 +14,9 @@
 #include <cuda.h>
 #include "zImageIO.h"
 
+#include <string>
+#include <stdio.h>
+
 // for thresholding algorithm
 cudaError_t cuda_ThresholdingSegmentationAlg(const Mat &inputImage, Mat &outputImage, int thresold);
 int cpu_ThresholdingSegmentationAlg(const Mat &input, Mat &output, int thresold);
@@ -27,10 +30,17 @@ cudaError_t cuda_IntelligenceDilate(const Mat &inputImage, const Mat &mask, Mat 
 
 template <int X>
 __global__ void cuda_IntelligenceDilate_Kernel(const unsigned char *dev_inputData, unsigned char *dev_mask, unsigned char *dev_outputData, 
-	int imageWidth, int imageHeight, int lower, int upper, int radius);
+	dim3 imageDim, int lower, int upper, int radius);
 
 static void GenerateBallStructure2D(dim3 memDim, int radius);
 
+// write information into specified file
+void log_print(const char *filename, const char *str);   //__declspec(dllexport) 
+//{
+//	FILE *fp = fopen(filename,"a");//"log_gpu.txt"
+//	fprintf(fp,"%s",str);
+//	fclose(fp);
+//}
 
 
 #endif
