@@ -1,14 +1,21 @@
 
-#include "cuda_Sobel_Kernels.h"
+/****************************************************
+  
+
+ a:   
+ date: 
+*****************************************************/
+
+#include "cuda_SobelOperationAlg.h"
 #include "time.h"
 
 
 int main()
 {
-	Mat grayImg = imread("F:/ProgramPractice/IPAndCV/ImagePreprocess/test02.jpg", 0);
+	Mat grayImg = imread("F:/ProgramPractice/IPAndCV/data/test02.jpg", 0);
 
-	int imgHeight = grayImg.rows;
-	int imgWidth = grayImg.cols;
+	int imgHeight = grayImg.rows;  // how much rows in the image
+	int imgWidth = grayImg.cols;   // how much cols in the image
 
 	Mat gaussImg;
 	//¸ßË¹ÂË²¨
@@ -33,10 +40,13 @@ int main()
 	cudaTimeEnd = clock();
 	std::cout << "GPU Use Time: " <<(double)(cudaTimeEnd - cudaTimeStart)/CLOCKS_PER_SEC << std::endl;
 
-	//cv::imshow("original image", grayImg);
-	//cv::imshow("sobel cuda", dstImg);
-	//cv::imshow("sobel cpu", dst);
-	//cv::waitKey();
+	Mat tmp = dst - dstImg;
+
+	cv::imshow("original image", grayImg);
+	cv::imshow("sobel cuda", dstImg);
+	cv::imshow("sobel cpu", dst);
+	cv::imshow("sobel cpu - cuda", tmp);
+	cv::waitKey();
 
 	return 0;
 }

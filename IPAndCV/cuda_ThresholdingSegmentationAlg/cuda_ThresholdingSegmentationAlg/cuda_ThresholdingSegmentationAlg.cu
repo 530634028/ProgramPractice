@@ -21,7 +21,7 @@ void log_print(const char *filename, const char *str)   //__declspec(dllexport)
 	fclose(fp);
 }
 
-__global__ void cuda_ThresholdingSegmentationAlg_Kernel(const unsigned char *input, unsigned char *output,
+__global__ void cuda_ThresholdingSegmentationAlgKernel(const unsigned char *input, unsigned char *output,
 	                                                    int imageW, int imageH, int thresold)
 {
 	int xIndex = threadIdx.x + blockIdx.x * blockDim.x;
@@ -86,7 +86,7 @@ cudaError_t cuda_ThresholdingSegmentationAlg(const Mat &inputImage, Mat &outputI
 	cudaStatus = cudaMalloc((void**)&dev_outputData, size * sizeof(unsigned char));
 
 	cudaStatus = cudaMemcpy(dev_inputData, inputImage.data, size * sizeof(unsigned char), cudaMemcpyHostToDevice);
-	cuda_ThresholdingSegmentationAlg_Kernel<<<size / 512, 512 >>>(dev_inputData, dev_outputData, imageWidth, imageHeight, thresold);
+	cuda_ThresholdingSegmentationAlgKernel<<<size / 512, 512 >>>(dev_inputData, dev_outputData, imageWidth, imageHeight, thresold);
 	cudaStatus = cudaMemcpy(outputImage.data, dev_outputData, size * sizeof(unsigned char), cudaMemcpyDeviceToHost);
 
 	cudaDeviceSynchronize();

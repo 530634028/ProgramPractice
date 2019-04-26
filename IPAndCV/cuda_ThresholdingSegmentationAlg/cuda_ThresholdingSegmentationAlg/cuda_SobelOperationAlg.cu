@@ -1,14 +1,21 @@
 
-#include "cuda_Sobel_Kernels.h"
+/****************************************************
+  
 
-//Sobel算子边缘检测CPU函数
-void sobel(Mat srcImg, Mat dstImg, int imgHeight, int imgWidth)
+ a:   
+ date: 
+*****************************************************/
+
+#include "cuda_SobelOperationAlg.h"
+
+//CPU version of Sobel operator for edge detecting
+void cpu_SobelOperation(Mat srcImg, Mat dstImg, int imgHeight, int imgWidth)
 {
     int Gx = 0;
     int Gy = 0;
     for (int i = 1; i < imgHeight - 1; i++)
     {
-        uchar *dataUp = srcImg.ptr<uchar>(i - 1);
+        uchar *dataUp = srcImg.ptr<uchar>(i - 1);  // may out of the range
         uchar *data = srcImg.ptr<uchar>(i);
         uchar *dataDown = srcImg.ptr<uchar>(i + 1);
         uchar *out = dstImg.ptr<uchar>(i);
@@ -22,7 +29,7 @@ void sobel(Mat srcImg, Mat dstImg, int imgHeight, int imgWidth)
 }
 
 //CUDA version of Sobel Operator for edge detection
-void sobelCuda(Mat srcImg, Mat dstImg, int imgHeight, int imgWidth)
+void cuda_SobelOperation(Mat srcImg, Mat dstImg, int imgHeight, int imgWidth)
 {
 	//创建GPU内存
 	unsigned char *d_in;
@@ -34,11 +41,11 @@ void sobelCuda(Mat srcImg, Mat dstImg, int imgHeight, int imgWidth)
 	//将高斯滤波后的图像从CPU传入GPU
 	cudaMemcpy(d_in, srcImg.data, imgHeight * imgWidth * sizeof(unsigned char), cudaMemcpyHostToDevice);
 
-	dim3 threadsPerBlock(64, 64);   //32 32
+	dim3 threadsPerBlock(32, 32);   //32 32
 	dim3 blocksPerGrid((imgWidth + threadsPerBlock.x - 1) / threadsPerBlock.x, (imgHeight + threadsPerBlock.y - 1) / threadsPerBlock.y);
 
 	//调用核函数
-	sobelInCuda <<< blocksPerGrid, threadsPerBlock >>>(d_in, d_out, imgHeight, imgWidth);
+	cuda_SobelOperationKernel <<< blocksPerGrid, threadsPerBlock >>>(d_in, d_out, imgHeight, imgWidth);
 
 	//将图像传回GPU
 	cudaMemcpy(dstImg.data, d_out, imgHeight * imgWidth * sizeof(unsigned char), cudaMemcpyDeviceToHost);
@@ -50,9 +57,9 @@ void sobelCuda(Mat srcImg, Mat dstImg, int imgHeight, int imgWidth)
 
 
 //Sobel算子边缘检测核函数
-__global__ void sobelInCuda(unsigned char *dataIn, unsigned char *dataOut, int imgHeight, int imgWidth)
+__global__ void cuda_SobelOperationKernel(unsigned char *dataIn, unsigned char *dataOut, int imgHeight, int imgWidth)
 {
-    int xIndex = threadIdx.x + blockIdx.x * blockDim.x;
+    int xIndex = threadIdx.x + blockIdx.x * blockDim.x;  // for 2D image
     int yIndex = threadIdx.y + blockIdx.y * blockDim.y;
     int index = yIndex * imgWidth + xIndex;
     int Gx = 0;

@@ -13,6 +13,7 @@
 #include "device_launch_parameters.h"
 #include <cuda.h>
 #include "zImageIO.h"
+#include "helper_cuda.h"
 
 #include <string>
 #include <stdio.h>
@@ -21,7 +22,7 @@
 cudaError_t cuda_ThresholdingSegmentationAlg(const Mat &inputImage, Mat &outputImage, int thresold);
 int cpu_ThresholdingSegmentationAlg(const Mat &input, Mat &output, int thresold);
 
-__global__ void cuda_ThresholdingSegmentationAlg_Kernel(const unsigned char *input, unsigned char *output,
+__global__ void cuda_ThresholdingSegmentationAlgKernel(const unsigned char *input, unsigned char *output,
 	int imageW, int imageH, int thresold);
 
 
