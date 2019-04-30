@@ -18,6 +18,8 @@
 #include <string>
 #include <stdio.h>
 
+static __constant__ __device__ int constStructTable[520];
+
 // for intelligence dilate algorithm
 int cpu_IntelligenceDilate(const Mat &input, const Mat &mask, Mat &output, int lower, int upper, int radius);
 cudaError_t cuda_IntelligenceDilate(const Mat &inputImage, const Mat &mask, Mat &outputImage, int lower, int upper, int radius);
@@ -27,6 +29,7 @@ __global__ void cuda_IntelligenceDilateKernel(const unsigned char *dev_inputData
 	dim3 imageDim, int lower, int upper, int radius, int numOfStruct);
 
 static void GenerateBallStructure2D(dim3 memDim, int radius, int &numOfStruct);
+static void GenerateRectStructure2D(dim3 memDim, int radius, int &numOfStruct);
 
 
 

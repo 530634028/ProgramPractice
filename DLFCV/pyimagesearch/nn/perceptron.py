@@ -1,9 +1,13 @@
+
+"""
 #
-# The implement of perceptron 
+# The implement of perceptron
 # a: zhonghy
 # date: 2018-7-10
 #
 #
+
+"""
 
 # import the necessary packages
 import numpy as np

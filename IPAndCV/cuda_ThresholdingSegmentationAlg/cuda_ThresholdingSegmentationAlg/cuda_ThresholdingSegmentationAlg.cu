@@ -13,12 +13,22 @@
 const int MaxValue = 255;
 const int MinValue = 0;
 
-// print necessary information into file, log_print or log_printf is already defined in CUDA???
-void log_print(const char *filename, const char *str)   //__declspec(dllexport) 
+// print necessary information into file named filename
+void log_print(const char *filename, const char *str)   // __declspec(dllexport) 
 {
-	FILE *fp = fopen(filename,"a");//"log_gpu.txt"
+	FILE *fp = fopen(filename,"a"); // "log_gpu.txt"
 	fprintf(fp,"%s",str);
 	fclose(fp);
+
+	//// write the table into txt file
+	//std::string str = std::to_string(long double(neighborPixelOffset)) + " "; 
+	//fprintf(fp,"%s",str.c_str());
+
+	//std::string anthorLine = std::string("\n");
+	//fprintf(fp,"%s", anthorLine.c_str());
+
+	//fclose(fp);
+
 }
 
 __global__ void cuda_ThresholdingSegmentationAlgKernel(const unsigned char *input, unsigned char *output,

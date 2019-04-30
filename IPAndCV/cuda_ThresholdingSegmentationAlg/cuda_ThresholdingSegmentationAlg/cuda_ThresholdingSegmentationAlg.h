@@ -21,18 +21,11 @@
 // for thresholding algorithm
 cudaError_t cuda_ThresholdingSegmentationAlg(const Mat &inputImage, Mat &outputImage, int thresold);
 int cpu_ThresholdingSegmentationAlg(const Mat &input, Mat &output, int thresold);
-
 __global__ void cuda_ThresholdingSegmentationAlgKernel(const unsigned char *input, unsigned char *output,
 	int imageW, int imageH, int thresold);
 
-
 // write information into specified file
 void log_print(const char *filename, const char *str);   //__declspec(dllexport) 
-//{
-//	FILE *fp = fopen(filename,"a");//"log_gpu.txt"
-//	fprintf(fp,"%s",str);
-//	fclose(fp);
-//}
 
 
 #endif

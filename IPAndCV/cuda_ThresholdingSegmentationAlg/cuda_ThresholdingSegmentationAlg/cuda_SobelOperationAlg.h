@@ -1,9 +1,9 @@
 
 /****************************************************
-  
-
- a:   
- date: 
+    Header file of Sobel Operation algorithm
+  CUDA kernel for 2D image
+  a: zhonghy  
+  date: 2019-4-26
 *****************************************************/
 
 #ifndef cuda_SobelOperationAlg_H

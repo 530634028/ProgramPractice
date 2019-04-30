@@ -8,11 +8,9 @@
 
 #include "cuda_IntelligenceDilateAlg.h"
 
-static __constant__ __device__ int conBallTable[520];
-
-/////////////////////////////////////////////////////////////////////////////////////////
 // generate location of specified pixel's neighbors in 2D image, resprsented by row
-static void GenerateBallStructure2D(dim3 memDim, int radius, int &numOfStructure)
+// the region is rectangle in which size is (2 * radius + 1) * (2 * radius + 1)
+static void GenerateRectStructure2D(dim3 memDim, int radius, int &numOfStruct)
 {
 	cudaError_t cudaStatus;
 	int ballStructure[520];
@@ -21,30 +19,45 @@ static void GenerateBallStructure2D(dim3 memDim, int radius, int &numOfStructure
 	int ybase = memDim.x;
 	//int count = 0;
 
-	//FILE *fp = fopen("cudaBallStructure.txt","a");//"log_gpu.txt"
 	for(int y = -radius; y <= radius; y++)
 	{
 		for(int x = -radius; x <= radius; x++)
 		{
 			int neighborPixelOffset = y * ybase + x;
 			if(neighborPixelOffset == 0) continue;	// if the location of specified pixel
-			/*if(sqrt(1.0 * ( x*x + y*y )) <= radius ) //if use this code, the structure is circle region.
-			{*/
-			ballStructure[numOfStructure++] = neighborPixelOffset;
-			/*}*/
+			ballStructure[numOfStruct++] = neighborPixelOffset;
 
-			//// write the table into txt file
-			//std::string str = std::to_string(long double(neighborPixelOffset)) + " "; 
-			//fprintf(fp,"%s",str.c_str());
 		}
-		//std::string anthorLine = std::string("\n");
-		//fprintf(fp,"%s", anthorLine.c_str());
 	}
-	//fclose(fp);
 
-	cudaStatus = (cudaMemcpyToSymbol(conBallTable, ballStructure, numOfStructure * sizeof(conBallTable[0])));
-	//if 
+	cudaStatus = (cudaMemcpyToSymbol(constStructTable, ballStructure, numOfStruct * sizeof(constStructTable[0])));
 }
+
+// the region is ball whose radius is radius
+static void GenerateBallStructure2D(dim3 memDim, int radius, int &numOfStruct)
+{
+	cudaError_t cudaStatus;
+	int ballStructure[520];
+	memset(ballStructure, 0, sizeof(ballStructure));
+	int zbase = memDim.x * memDim.y;
+	int ybase = memDim.x;	
+
+	for(int y = -radius; y <= radius; y++)
+	{
+		for(int x = -radius; x <= radius; x++)
+		{
+			int neighborPixelOffset = y * ybase + x;
+			if(neighborPixelOffset == 0) continue;	// if the location of specified pixel
+			if(sqrt(1.0 * ( x*x + y*y )) <= radius ) //if use this code, the structure is circle region.
+			{
+				ballStructure[numOfStruct++] = neighborPixelOffset;
+			}
+		}
+	}
+
+	cudaStatus = (cudaMemcpyToSymbol(constStructTable, ballStructure, numOfStruct * sizeof(constStructTable[0])));
+}
+
 
 // template <int X>
 __global__ void cuda_IntelligenceDilateKernel(const unsigned char *dev_inputData, unsigned char *dev_mask, unsigned char *dev_outputData, 
@@ -55,22 +68,8 @@ __global__ void cuda_IntelligenceDilateKernel(const unsigned char *dev_inputData
 	int dataIndex = yIndex * imageDim.x + xIndex;
 
 	// eight neighbor region
-	//int neighbor[8];
-	int nx = imageDim.x; //imageWidth;
-	int imageSize = imageDim.x * imageDim.y;//imageWidth * imageHeight;
-
-	// only for eight region, full
-	//neighbor[0] = -1;
-	//neighbor[1] = 1;
-
-	//neighbor[2] = -nx;
-	//neighbor[3] = nx;
-
-	//neighbor[4] = nx - 1;
-	//neighbor[5] = nx + 1;
-
-	//neighbor[6] = -nx - 1;
-	//neighbor[7] = -nx + 1;
+	int nx = imageDim.x;   // imageWidth;
+	int imageSize = imageDim.x * imageDim.y;  // imageWidth * imageHeight;
 
 	if(dev_mask[dataIndex])
 	{
@@ -78,7 +77,7 @@ __global__ void cuda_IntelligenceDilateKernel(const unsigned char *dev_inputData
 		// deal with pixels in specified pixel's neighbor region
 		for(int i = 0; i < numOfStruct; ++i)   // X
 		{
-			int dataIndexNeighbor = dataIndex + conBallTable[i];  // + neighbor[i]; add the offset to specified pixel
+			int dataIndexNeighbor = dataIndex + constStructTable[i];  // + neighbor[i]; add the offset to specified pixel
 			if(dataIndexNeighbor >= 0 && dataIndexNeighbor < imageSize)
 			{
 				if(dev_inputData[dataIndexNeighbor] >= lower && dev_inputData[dataIndexNeighbor] <= upper)
@@ -124,8 +123,8 @@ cudaError_t cuda_IntelligenceDilate(const Mat &inputImage, const Mat &mask, Mat 
 	imageDim.z = 0;
 	int numOfStruct = 0;
 
-	GenerateBallStructure2D(imageDim, radius, numOfStruct);
-	cudaDeviceSynchronize();
+	GenerateRectStructure2D(imageDim, radius, numOfStruct);
+	//cudaDeviceSynchronize();
 
 	////for 2D image, if 3D image, value is 6 32 122 256 514
 	//switch(radius)

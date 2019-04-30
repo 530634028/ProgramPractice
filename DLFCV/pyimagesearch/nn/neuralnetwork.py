@@ -1,8 +1,12 @@
+
+"""
 #
 # Implement of backpropagation for deep learning with python
 # a: zhonghy
 # date: 2018-7-11
 #
+
+"""
 
 # import the necessary packages
 import numpy as np
