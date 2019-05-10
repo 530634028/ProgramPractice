@@ -1,10 +1,14 @@
 
+"""
 #
 # Implement for Mnist with Acgan
 # date: 2018-5-21
 # a   : zhonghy
 #
 #
+
+"""
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -299,20 +303,5 @@ if __name__ == '__main__':
         Image.fromarray(img).save('plot_epoch_{0:03d}_generated.png'.format(epoch))
     pickle.dump({'train': train_history, 'test': test_history},
                 open('F:\data\AcGanForMnist\acgan-history.pkl', 'wb'))
-
-
-        
-
-            
-
-
-
-
-
-
-    
-
-
-
 
 
