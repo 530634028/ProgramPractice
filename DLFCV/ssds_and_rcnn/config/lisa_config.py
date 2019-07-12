@@ -9,9 +9,10 @@ import os
 
 # inialize the base path for the LISA dataset
 # the path of dataset in compnay computer
-# BASE_PATH = "F:\data\lisa"
+BASE_PATH = "F:\data\lisa"
+
 # the path of dataset in home computer
-BASE_PATH = "E:\data\lisa"
+# BASE_PATH = "E:\data\lisa"
 
 # build the path to the annotations file
 ANNOT_PATH = os.path.sep.join([BASE_PATH, "allAnnotations.csv"])
