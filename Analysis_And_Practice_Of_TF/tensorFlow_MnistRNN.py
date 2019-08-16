@@ -32,7 +32,7 @@ y = tf.placeholder(tf.float32, [None, n_classes])
 
 #define weights
 weights = {
-    #(28, 28)
+    #(28, 128)
     'in': tf.Variable(tf.random_normal([n_inputs, n_hidden_units])),
     #(128, 10)
     'out': tf.Variable(tf.random_normal([n_hidden_units, n_classes]))
